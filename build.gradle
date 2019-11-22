@@ -4,12 +4,21 @@ plugins {
     id "org.jetbrains.kotlin.plugin.allopen" version "1.3.50"
     id "com.github.johnrengelman.shadow" version "5.0.0"
     id "application"
+    id 'com.google.cloud.tools.jib' version '1.7.0'
 }
-
-
 
 version "0.1"
 group "dk.fitfit.injurylog"
+
+jib {
+    from {
+        image = "adoptopenjdk/openjdk12:x86_64-alpine-jre-12.0.2_10"
+    }
+    to {
+        image = "registry.heroku.com/injury-log/web"
+        tags = [project.version]
+    }
+}
 
 repositories {
     mavenCentral()
