@@ -1,5 +1,5 @@
 profile: service
-defaultPackage: dk.fitfit
+defaultPackage: dk.fitfit.injurylog
 ---
 testFramework: kotlintest
 sourceLanguage: kotlin

@@ -9,7 +9,7 @@ plugins {
 
 
 version "0.1"
-group "dk.fitfit"
+group "dk.fitfit.injurylog"
 
 repositories {
     mavenCentral()
@@ -46,7 +46,7 @@ dependencies {
 
 test.classpath += configurations.developmentOnly
 
-mainClassName = "dk.fitfit.Application"
+mainClassName = "dk.fitfit.injurylog.Application"
 
 test {
     useJUnitPlatform()

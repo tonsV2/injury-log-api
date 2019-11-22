@@ -1,3 +1,11 @@
+
+# Start
+## Gradle
+```bash
+JWT_SIGNATURES_GENERATOR_SECRET=some_255_bits_long_secret_string
+./gradlew run
+```
+
 # Login
 ## Get token (bash)
 ```bash
