@@ -51,6 +51,7 @@ dependencies {
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
 
     implementation "io.micronaut:micronaut-security-jwt"
+    implementation 'com.google.api-client:google-api-client:1.30.5'
 }
 
 test.classpath += configurations.developmentOnly

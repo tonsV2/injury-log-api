@@ -15,3 +15,8 @@ micronaut:
           secret:
             generator:
               secret: ${JWT_SIGNATURES_GENERATOR_SECRET}
+
+google:
+  server:
+    client:
+      id: 588170906559-raeponfqqduusmmpnqjd8a422ccq8cp0.apps.googleusercontent.com

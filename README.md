@@ -40,7 +40,21 @@ set token (echo '{
     }' | http post :8080/login | jq -r '.access_token')
 ```
 
+## Get bearer token from Google Id Token (fish)
+```bash
+set google_token "eyJhb...xxx"
+set token (echo "{
+        \"username\": \"_\",
+        \"password\": \"$google_token\"
+      }" | http :8080/login | jq -r '.access_token')
+```
+
 ## Access secure endpoint
 ```bash
 http :8080/home "Authorization:Bearer $token"
 ```
+
+# Inspiration
+* https://guides.micronaut.io/micronaut-security-jwt-kotlin/guide/index.html
+* https://developers.google.com/identity/sign-in/android/backend-auth
+* 
