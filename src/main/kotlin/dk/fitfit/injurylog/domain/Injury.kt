@@ -7,6 +7,6 @@ import javax.persistence.*
 @Entity
 data class Injury(val description: String,
                   @JsonIgnore @ManyToOne val user: User?,
-                  val occurrence: LocalDateTime = LocalDateTime.now(),
-                  val logged: LocalDateTime = LocalDateTime.now(),
+                  val occurredAt: LocalDateTime = LocalDateTime.now(),
+                  val loggedAt: LocalDateTime = LocalDateTime.now(),
                   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long = 0)

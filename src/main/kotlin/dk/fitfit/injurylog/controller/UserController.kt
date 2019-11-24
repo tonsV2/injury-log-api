@@ -12,8 +12,5 @@ import java.security.Principal
 @Controller
 class UserController(private val userService: UserService) {
     @Get("/users")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    fun getUsers(): Iterable<User> {
-        return userService.findAll()
-    }
+    fun getUsers(): Iterable<User> = userService.findAll()
 }

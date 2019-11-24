@@ -7,15 +7,11 @@ import javax.inject.Singleton
 
 @Singleton
 class UserServiceImpl(private val userRepository: UserRepository) : UserService {
-    override fun save(user: User): User {
-        return userRepository.save(user)
-    }
+    override fun save(user: User): User = userRepository.save(user)
 
-    override fun findByEmail(email: String): User? {
-        return userRepository.findByEmail(email)
-    }
+    override fun getByEmail(email: String): User = userRepository.findByEmail(email) ?: throw UserNotFoundException(email)
 
-    override fun findAll(): Iterable<User> {
-        return userRepository.findAll()
-    }
+    override fun findAll(): Iterable<User> = userRepository.findAll()
 }
+
+class UserNotFoundException(email: String) : RuntimeException("No user found with the email: $email")
