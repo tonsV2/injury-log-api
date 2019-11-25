@@ -29,9 +29,9 @@ class InjuryController(private val userService: UserService, private val injuryS
     }
 
     @Post("/injuries")
-    fun postInjury(injuryRequest: InjuryRequest, principal: Principal): Injury? = userService.getByEmail(principal.name).let {
+    fun postInjury(injuryRequest: InjuryRequest, principal: Principal): InjuryResponse = userService.getByEmail(principal.name).let {
         val injury = injuryRequest.toInjury(it)
-        injuryService.save(injury)
+        injuryService.save(injury).toInjuryResponse()
     }
 
     private fun InjuryRequest.toInjury(user: User) = Injury(description, user, occurredAt)
