@@ -41,8 +41,6 @@ class InjuryController(private val userService: UserService, private val injuryS
 @Produces
 @Singleton
 @Requires(classes = [UserNotFoundException::class, ExceptionHandler::class])
-object UserNotFoundExceptionHandler : ExceptionHandler<UserNotFoundException, HttpResponse<*>?> {
-    override fun handle(request: HttpRequest<*>?, exception: UserNotFoundException): HttpResponse<String> {
-        return HttpResponse.notFound(exception.message)
-    }
+class UserNotFoundExceptionHandler : ExceptionHandler<UserNotFoundException, HttpResponse<*>?> {
+    override fun handle(request: HttpRequest<*>?, exception: UserNotFoundException): HttpResponse<String> = HttpResponse.notFound(exception.message)
 }
