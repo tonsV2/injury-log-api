@@ -20,16 +20,17 @@ class AuthenticationProviderUserPassword(private val authenticationProviderConfi
             verifyToken(authenticationRequest.secret as String)?.let {
                 if (it.email != null && it.emailVerified) {
                     // TODO: If payload.emailVerified == false create AuthenticationFailureReason and pass to AuthenticationFailed
-                    createUserIfNotFound(it.email)
-                    return Flowable.just<AuthenticationResponse>(UserDetails(it.email, ArrayList()))
+                    val user = createUserIfNotFound(it.email)
+                    val roles = user.roles.map { role -> role.name }
+                    return Flowable.just<AuthenticationResponse>(UserDetails(it.email, roles))
                 }
             }
         }
         return Flowable.just<AuthenticationResponse>(AuthenticationFailed())
     }
 
-    private fun createUserIfNotFound(email: String) {
-        try {
+    private fun createUserIfNotFound(email: String): User {
+        return try {
             userService.getByEmail(email)
         } catch (e: UserNotFoundException) {
             userService.save(User(email))

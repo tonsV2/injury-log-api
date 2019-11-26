@@ -7,10 +7,15 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import java.security.Principal
+import javax.annotation.security.RolesAllowed
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
 class UserController(private val userService: UserService) {
+    @RolesAllowed("ROLE_ADMIN")
     @Get("/users")
     fun getUsers(): Iterable<User> = userService.findAll()
+
+    @Get("/principal")
+    fun getUsers(principal: Principal): Principal = principal
 }

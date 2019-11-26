@@ -8,5 +8,6 @@ import javax.validation.constraints.NotNull
 @Entity
 data class User(@Column(nullable = false, unique = true) val email: String,
                 val created: LocalDateTime = LocalDateTime.now(),
-                @JsonIgnore @OneToMany(fetch = FetchType.LAZY) val injuries: MutableList<Injury> = ArrayList(),
+                @JsonIgnore @OneToMany val injuries: MutableList<Injury> = mutableListOf(),
+                @ManyToMany(fetch = FetchType.EAGER) val roles: MutableList<Role> = mutableListOf(),
                 @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long = 0)
