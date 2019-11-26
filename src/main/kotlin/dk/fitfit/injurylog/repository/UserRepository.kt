@@ -7,6 +7,5 @@ import io.micronaut.data.repository.CrudRepository
 
 @Repository
 interface UserRepository : CrudRepository<User, Long> {
-    @Query("from User u where u.email = :email")
     fun findByEmail(email: String): User?
 }
