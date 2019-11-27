@@ -22,7 +22,7 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
     override fun addImage(user: User, id: Long, file: CompletedFileUpload): ImageReference? {
         val injury = injuryRepository.findBy(user, id) ?: throw InjuryNotFoundException(user.email, id)
         if (injury.imageReferences.size >= 3) throw TooManyImagesException(injury.imageReferences.size)
-        val key = "${user.id}:${file.filename}"
+        val key = "${injury.id}:${file.filename}"
         return fileStorage.put(key, file)?.let {
             val imageReference = imageReferenceRepository.save(ImageReference(it))
             injury.imageReferences.add(imageReference)
