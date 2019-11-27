@@ -17,7 +17,8 @@ docker-compose up
 ```
 
 # Deploy to Heroku
-Remember to set the required environment variables. See .env.example for a complete list.
+* Remember to set the required environment variables. See .env.example for a complete list
+* Depending on the Dyno type, setting the environment variable JAVA_TOOL_OPTIONS to "-Xmx512M -Xms256M" might also be necessary
 
 ```bash
 docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
