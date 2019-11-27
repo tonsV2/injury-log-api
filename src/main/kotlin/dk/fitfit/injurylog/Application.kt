@@ -28,7 +28,7 @@ open class UserLoader(private val adminUserConfiguration: AdminUserConfiguration
     override fun onApplicationEvent(event: ServiceStartedEvent) {
         log.info("Creating admin role")
         val role = roleService.save(Role("ROLE_ADMIN"))
-        log.info("Role: $role")
+        log.info("Role: ${role.name}")
         log.info("All roles:")
         roleService.findAll().forEach { log.info(it.name) }
 
@@ -36,7 +36,7 @@ open class UserLoader(private val adminUserConfiguration: AdminUserConfiguration
         val user = User(adminUserConfiguration.adminUserEmail)
         user.roles.add(role)
         val saved = userService.save(user)
-        log.info("Admin user: $saved")
+        log.info("Admin user: ${saved.email}")
     }
 
     companion object {

@@ -8,5 +8,5 @@ import javax.persistence.*
 class User(@Column(nullable = false, unique = true) val email: String,
            val created: LocalDateTime = LocalDateTime.now(),
            @JsonIgnore @OneToMany val injuries: List<Injury> = listOf(),
-           @ManyToMany(fetch = FetchType.EAGER) val roles: List<Role> = listOf(),
+           @ManyToMany(fetch = FetchType.EAGER) val roles: MutableList<Role> = mutableListOf(),
            @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long = 0)

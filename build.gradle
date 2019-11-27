@@ -65,6 +65,8 @@ dependencies {
     compile 'io.micronaut.data:micronaut-data-hibernate-jpa:1.0.0.M4'
     runtimeOnly("com.h2database:h2")
     runtimeOnly("io.micronaut.configuration:micronaut-jdbc-hikari")
+
+    compile 'com.amazonaws:aws-java-sdk-s3:1.11.414'
 }
 
 test.classpath += configurations.developmentOnly
