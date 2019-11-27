@@ -1,4 +1,4 @@
-package dk.fitfit.injurylog.service
+package dk.fitfit.injurylog.authentication
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
@@ -6,11 +6,11 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import dk.fitfit.injurylog.configuration.AuthenticationProviderConfiguration
 import dk.fitfit.injurylog.domain.User
+import dk.fitfit.injurylog.service.UserService
 import dk.fitfit.injurylog.service.impl.UserNotFoundException
 import io.micronaut.security.authentication.*
 import io.reactivex.Flowable
 import org.reactivestreams.Publisher
-import java.util.*
 import javax.inject.Singleton
 
 @Singleton
