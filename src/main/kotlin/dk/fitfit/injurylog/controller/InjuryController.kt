@@ -55,8 +55,6 @@ class InjuryController(private val userService: UserService, private val injuryS
         }
     }
 
-// TODO: https://stackoverflow.com/questions/53592685/how-to-download-stream-large-generated-file-in-micronaut
-// TODO: https://stackoverflow.com/questions/40262512/how-to-get-outputstream-from-an-s3object
     @Get("/injuries/{injuryId}/images/{imageId}")
     fun getImage(injuryId: Long, imageId: Long, principal: Principal): StreamedFile {
         val inputStream = userService.getByEmail(principal.name).let {
