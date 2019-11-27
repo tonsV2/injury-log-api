@@ -78,7 +78,7 @@ test {
 }
 
 allOpen {
-	annotation("io.micronaut.aop.Around")
+	annotations("io.micronaut.aop.Around", "javax.transaction.Transactional")
 }
 
 compileKotlin {

@@ -12,12 +12,12 @@ import javax.inject.Singleton
 import javax.transaction.Transactional
 
 @Singleton
-open class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private val fileStorage: FileStorage, private val imageReferenceRepository: ImageReferenceRepository) : InjuryService {
+@Transactional
+class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private val fileStorage: FileStorage, private val imageReferenceRepository: ImageReferenceRepository) : InjuryService {
     override fun save(injury: Injury): Injury = injuryRepository.save(injury)
 
     override fun findAll(user: User): Iterable<Injury> = injuryRepository.findAll(user)
 
-    @Transactional
     override fun addImage(user: User, id: Long, file: CompletedFileUpload): ImageReference? {
         val injury = injuryRepository.findBy(user, id) ?: throw InjuryNotFoundException(user.email, id)
         if (injury.imageReferences.size >= 3) throw TooManyImagesException(injury.imageReferences.size)
