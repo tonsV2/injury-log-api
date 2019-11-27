@@ -3,6 +3,7 @@ package dk.fitfit.injurylog.service.impl
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.CannedAccessControlList
+import com.amazonaws.services.s3.model.GetObjectRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -15,7 +16,7 @@ import io.micronaut.http.multipart.FileUpload
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.io.IOException
-import java.net.URL
+import java.io.InputStream
 import java.util.concurrent.Executors
 import javax.inject.Singleton
 
@@ -57,7 +58,8 @@ class S3FileRepository(private val awsConfiguration: AwsConfiguration) : FileSto
         }
     }
 
-    override fun get(key: String): URL = s3Client.getUrl(bucketName, key)
+//    override fun get(key: String): URL = s3Client.getUrl(bucketName, key)
+    override fun get(key: String): InputStream = s3Client.getObject(GetObjectRequest(bucketName, key)).objectContent
 
     override fun delete(key: String) = s3Client.deleteObject(bucketName, key)
 

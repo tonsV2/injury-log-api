@@ -14,6 +14,7 @@ import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import io.micronaut.http.multipart.CompletedFileUpload
 import io.micronaut.http.server.exceptions.ExceptionHandler
+import io.micronaut.http.server.types.files.StreamedFile
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import java.security.Principal
@@ -57,15 +58,15 @@ class InjuryController(private val userService: UserService, private val injuryS
 // TODO: https://stackoverflow.com/questions/53592685/how-to-download-stream-large-generated-file-in-micronaut
 // TODO: https://stackoverflow.com/questions/40262512/how-to-get-outputstream-from-an-s3object
     @Get("/injuries/{injuryId}/images/{imageId}")
-    fun getImage(injuryId: Long, imageId: Long, principal: Principal) {
-        val injury = userService.getByEmail(principal.name).let {
-//            injuryService.getImage(it, injuryId, imageId)
+    fun getImage(injuryId: Long, imageId: Long, principal: Principal): StreamedFile {
+        val inputStream = userService.getByEmail(principal.name).let {
+            injuryService.getImage(it, injuryId, imageId)
         }
+        return StreamedFile(inputStream, MediaType.APPLICATION_OCTET_STREAM_TYPE)
     }
 
     private fun InjuryRequest.toInjury(user: User) = Injury(description, user, occurredAt)
     private fun Injury.toInjuryResponse() = InjuryResponse(description, occurredAt, loggedAt, imageReferences.map { it.id }, id)
-//    private fun Injury.toInjuryResponse(imageUris: List<URI>) = InjuryResponse(description, occurredAt, loggedAt, imageUris, id)
 }
 
 @Produces

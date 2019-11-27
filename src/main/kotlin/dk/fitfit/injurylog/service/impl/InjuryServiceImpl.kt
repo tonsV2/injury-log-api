@@ -8,6 +8,7 @@ import dk.fitfit.injurylog.repository.InjuryRepository
 import dk.fitfit.injurylog.service.FileStorage
 import dk.fitfit.injurylog.service.InjuryService
 import io.micronaut.http.multipart.CompletedFileUpload
+import java.io.InputStream
 import javax.inject.Singleton
 import javax.transaction.Transactional
 
@@ -38,6 +39,13 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
             injury.imageReferences.remove(it)
             imageReferenceRepository.delete(it)
         }
+    }
+
+    override fun getImage(user: User, injuryId: Long, imageId: Long): InputStream {
+        val injury = injuryRepository.findBy(user, injuryId) ?: throw InjuryNotFoundException(user.email, injuryId)
+        if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
+        val imageReference = imageReferenceRepository.findById(imageId).get()
+        return fileStorage.get(imageReference.key)
     }
 }
 
