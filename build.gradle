@@ -61,10 +61,11 @@ dependencies {
     implementation "io.micronaut:micronaut-security-jwt"
     implementation 'com.google.api-client:google-api-client:1.30.5'
 
-    kapt("io.micronaut.data:micronaut-data-processor:1.0.0.M4")
+    kapt "io.micronaut.data:micronaut-data-processor:1.0.0.M4"
     compile 'io.micronaut.data:micronaut-data-hibernate-jpa:1.0.0.M4'
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("io.micronaut.configuration:micronaut-jdbc-hikari")
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly 'org.postgresql:postgresql:42.2.8'
+    runtimeOnly "io.micronaut.configuration:micronaut-jdbc-hikari"
 
     compile 'com.amazonaws:aws-java-sdk-s3:1.11.414'
 }
