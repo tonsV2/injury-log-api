@@ -29,7 +29,18 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
             imageReference
         }
     }
+
+    override fun deleteImage(user: User, injuryId: Long, imageId: Long) {
+        val injury = injuryRepository.findBy(user, injuryId) ?: throw InjuryNotFoundException(user.email, injuryId)
+        if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
+        imageReferenceRepository.findById(imageId).ifPresent {
+            fileStorage.delete(it.key)
+            injury.imageReferences.remove(it)
+            imageReferenceRepository.delete(it)
+        }
+    }
 }
 
 class TooManyImagesException(numberOfImages: Int) : RuntimeException("Too many images added to the injury. Maximum number of images allowed is 3, current number is $numberOfImages")
 class InjuryNotFoundException(email: String, id: Long) : RuntimeException("No injury found with: (id: $id, email: $email)")
+class ImageReferenceNotFoundException(id: Long) : RuntimeException("No imageReference found with id: $id")

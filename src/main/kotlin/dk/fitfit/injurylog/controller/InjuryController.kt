@@ -31,8 +31,6 @@ class InjuryController(private val userService: UserService, private val injuryS
     @Post("/injuries")
     fun postInjury(injuryRequest: InjuryRequest, principal: Principal): InjuryResponse = userService.getByEmail(principal.name).let {
         val injury = injuryRequest.toInjury(it)
-//        val imageUris = injuryService.imageUris(injury)
-//        injuryService.save(injury).toInjuryResponse(imageUris)
         injuryService.save(injury).toInjuryResponse()
     }
 
@@ -49,9 +47,10 @@ class InjuryController(private val userService: UserService, private val injuryS
     }
 
     @Delete("/injuries/{injuryId}/images/{imageId}")
-    fun deleteImage(injuryId: Long, imageId: Long, principal: Principal) {
-        val imageReference = userService.getByEmail(principal.name).let {
-//            injuryService.deleteImage(it, injuryId, imageId)
+    fun deleteImage(injuryId: Long, imageId: Long, principal: Principal): HttpResponse<Any>? {
+        userService.getByEmail(principal.name).let {
+            injuryService.deleteImage(it, injuryId, imageId)
+            return HttpResponse.ok()
         }
     }
 
@@ -65,7 +64,7 @@ class InjuryController(private val userService: UserService, private val injuryS
     }
 
     private fun InjuryRequest.toInjury(user: User) = Injury(description, user, occurredAt)
-    private fun Injury.toInjuryResponse() = InjuryResponse(description, occurredAt, loggedAt, id)
+    private fun Injury.toInjuryResponse() = InjuryResponse(description, occurredAt, loggedAt, imageReferences.map { it.id }, id)
 //    private fun Injury.toInjuryResponse(imageUris: List<URI>) = InjuryResponse(description, occurredAt, loggedAt, imageUris, id)
 }
 
