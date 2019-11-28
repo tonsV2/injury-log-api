@@ -4,5 +4,14 @@ services:
     image: registry.heroku.com/injury-log/web
     ports:
       - 8080:8080
+    env_file:
+      - .env
     environment:
-      JWT_SIGNATURES_GENERATOR_SECRET: ${JWT_SIGNATURES_GENERATOR_SECRET}
+      MICRONAUT_ENVIRONMENTS: docker
+
+  database:
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_USER: injury-log
+      POSTGRES_PASSWORD: injury-log
+      POSTGRES_DB: injury-log
