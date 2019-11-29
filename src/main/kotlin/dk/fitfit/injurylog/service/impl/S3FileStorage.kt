@@ -46,7 +46,8 @@ class S3FileRepository(private val awsConfiguration: AwsConfiguration) : FileSto
     override fun put(key: String, file: CompletedFileUpload): String? {
         return try {
             val inputStream = file.inputStream
-            val request: PutObjectRequest = PutObjectRequest(bucketName, key, inputStream, createObjectMetadata(file)).withCannedAcl(CannedAccessControlList.PublicRead)
+            val request: PutObjectRequest = PutObjectRequest(bucketName, key, inputStream, createObjectMetadata(file))
+                    .withCannedAcl(CannedAccessControlList.Private)
             s3Client.putObject(request)
             inputStream.close()
             key
