@@ -1,22 +1,23 @@
 # Start
-## Gradle
+## Gradle (database: H2)
 ```bash
 JWT_SIGNATURES_GENERATOR_SECRET=some_255_bits_long_secret_string
 ./gradlew run
 ```
 
-## Docker
+## Docker (database: H2)
 ```bash
 ./gradlew jibDockerBuild
 docker run -it -p 8080:8080 --env-file .env registry.heroku.com/injury-log/web
 ```
-Or with docker-compose
+
+## Docker Compose (database: Postgresql)
 ```bash
 ./gradlew jibDockerBuild
 docker-compose up
 ```
 
-# Deploy to Heroku
+# Deploy to Heroku (database: Postgresql)
 * Remember to set the required environment variables. See .env.example for a complete list
 * Depending on the Dyno type, setting the environment variable JAVA_TOOL_OPTIONS to "-Xmx512M -Xms256M" might also be necessary
 
