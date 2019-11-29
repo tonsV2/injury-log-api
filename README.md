@@ -26,10 +26,35 @@ docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
 heroku container:release web
 ```
 
-# Inspiration
-* https://guides.micronaut.io/micronaut-security-jwt-kotlin/guide/index.html
-* https://developers.google.com/identity/sign-in/android/backend-auth
-* 
+# S3 Configuration
+S3 is used for file storage and a bucket should be configured. For the sake of user privacy the stored files will be streamed from S3 to this application and then to the client.
+
+Performance wise this is not ideal but making this application act as a gateway should ensure that only files actually owned by the user are served.
+
+The following bucket policy has been applied to the bucket. Granting only a single IAM user access and all public access has been blocked.
+```json
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1542998309644",
+    "Statement": [
+        {
+            "Sid": "Stmt1542998308012",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::058842494618:user/s3-injury-log"
+            },
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::injury-log/*"
+            ]
+        }
+    ]
+}
+```
 
 # Usage
 All of the below examples are for fish shell (https://fishshell.com/) using httpie (https://httpie.org/)
@@ -69,3 +94,8 @@ http :8080/injuries/1/images/1 "Authorization:Bearer $access_token" > image.png
 ```bash
 http delete :8080/injuries/1/images/1 "Authorization:Bearer $access_token"
 ```
+
+# Inspiration
+* https://guides.micronaut.io/micronaut-security-jwt-kotlin/guide/index.html
+* https://developers.google.com/identity/sign-in/android/backend-auth
+* 
