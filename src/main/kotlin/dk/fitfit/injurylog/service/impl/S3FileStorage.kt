@@ -25,21 +25,17 @@ import javax.inject.Singleton
 @Singleton
 class S3FileRepository(private val awsConfiguration: AwsConfiguration) : FileStorage, Closeable {
     private val bucketName: String = awsConfiguration.bucket
-    private val s3Client: AmazonS3
+    private val s3Client: AmazonS3 = AmazonS3Client.builder()
+            .withRegion(awsConfiguration.region)
+            .withCredentials(awsConfiguration)
+            .build()
     private val transferManager: TransferManager
 
     init {
-        s3Client = AmazonS3Client.builder()
-                .withRegion(awsConfiguration.region)
-                .withCredentials(awsConfiguration)
-                .build()
-
-        val multipartUploadThreshold: Long = awsConfiguration.multipartUploadThreshold
-        val maxUploadThreads: Int = awsConfiguration.maxUploadThreads
         transferManager = TransferManagerBuilder.standard()
                 .withS3Client(s3Client)
-                .withMultipartUploadThreshold(multipartUploadThreshold)
-                .withExecutorFactory { Executors.newFixedThreadPool(maxUploadThreads) }
+                .withMultipartUploadThreshold(awsConfiguration.multipartUploadThreshold)
+                .withExecutorFactory { Executors.newFixedThreadPool(awsConfiguration.maxUploadThreads) }
                 .build()
     }
 
@@ -53,7 +49,7 @@ class S3FileRepository(private val awsConfiguration: AwsConfiguration) : FileSto
             key
         } catch (e: IOException) {
             if (LOG.isErrorEnabled) {
-                LOG.error("Error occurred while uploading file " + e.message)
+                LOG.error("Error occurred while uploading file ${e.message}")
             }
             null
         }
