@@ -19,8 +19,8 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
 
     override fun findAll(user: User): Iterable<Injury> = injuryRepository.findAll(user)
 
-    override fun addImage(user: User, id: Long, file: CompletedFileUpload): ImageReference? {
-        val injury = injuryRepository.findBy(user, id) ?: throw InjuryNotFoundException(user.email, id)
+    override fun addImage(user: User, injuryId: Long, file: CompletedFileUpload): ImageReference? {
+        val injury = injuryRepository.findBy(user, injuryId) ?: throw InjuryNotFoundException(user.email, injuryId)
         if (injury.imageReferences.size >= 3) throw TooManyImagesException(injury.imageReferences.size)
         val key = "${injury.id}:${file.filename}"
         return fileStorage.put(key, file)?.let {
