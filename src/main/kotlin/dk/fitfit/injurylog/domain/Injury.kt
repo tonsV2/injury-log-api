@@ -8,7 +8,7 @@ import javax.persistence.*
 
 @Entity
 class Injury(val description: String,
-             @JsonIgnore @ManyToOne val user: User?,
+             @JsonIgnore @ManyToOne val user: User,
              val occurredAt: LocalDateTime = LocalDateTime.now(),
              val loggedAt: LocalDateTime = LocalDateTime.now(),
              @OneToMany(fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT) val imageReferences: MutableList<ImageReference> = mutableListOf(),

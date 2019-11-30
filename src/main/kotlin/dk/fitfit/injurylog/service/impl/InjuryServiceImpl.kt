@@ -25,7 +25,7 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
             throw InjuryNotFoundException(injuryId)
         }
         val injury = optional.get()
-        if (injury.user?.id != user.id) {
+        if (injury.user.id != user.id) {
             throw InjuryDoesNotBelongToUserException(user, injuryId)
         }
         return injury
