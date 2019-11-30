@@ -29,6 +29,11 @@ class InjuryController(private val userService: UserService, private val injuryS
         injuryService.findAll(it).map { entity -> entity.toInjuryResponse() }
     }
 
+    @Get("/injuries/{id}")
+    fun getInjury(id: Long, principal: Principal): InjuryResponse = userService.getByEmail(principal.name).let {
+        injuryService.get(it, id).toInjuryResponse()
+    }
+
     @Post("/injuries")
     fun postInjury(injuryRequest: InjuryRequest, principal: Principal): InjuryResponse = userService.getByEmail(principal.name).let {
         val injury = injuryRequest.toInjury(it)

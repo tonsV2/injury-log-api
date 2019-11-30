@@ -10,7 +10,4 @@ import io.micronaut.data.repository.CrudRepository
 interface InjuryRepository : CrudRepository<Injury, Long> {
     @Query("from Injury i where i.user = :user")
     fun findAll(user: User): Iterable<Injury>
-
-    @Query("from Injury i where i.user = :user and i.id = :id")
-    fun findBy(user: User, id: Long): Injury?
 }

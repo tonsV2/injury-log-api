@@ -19,8 +19,21 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
 
     override fun findAll(user: User): Iterable<Injury> = injuryRepository.findAll(user)
 
+    override fun get(user: User, injuryId: Long): Injury {
+        val optional = injuryRepository.findById(injuryId)
+        if (optional.isEmpty) {
+            throw InjuryNotFoundException(injuryId)
+        }
+        val injury = optional.get()
+        if (injury.user?.id != user.id) {
+            throw InjuryDoesNotBelongToUserException(user, injuryId)
+        }
+        return injury
+    }
+
     override fun addImage(user: User, injuryId: Long, file: CompletedFileUpload): ImageReference? {
-        val injury = injuryRepository.findBy(user, injuryId) ?: throw InjuryNotFoundException(user.email, injuryId)
+        val injury = get(user, injuryId)
+
         if (injury.imageReferences.size >= 3) throw TooManyImagesException(injury.imageReferences.size)
         val key = "${injury.id}:${file.filename}"
         return fileStorage.put(key, file)?.let {
@@ -32,7 +45,8 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
     }
 
     override fun deleteImage(user: User, injuryId: Long, imageId: Long) {
-        val injury = injuryRepository.findBy(user, injuryId) ?: throw InjuryNotFoundException(user.email, injuryId)
+        val injury = get(user, injuryId)
+
         if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
         imageReferenceRepository.findById(imageId).ifPresent {
             fileStorage.delete(it.key)
@@ -42,13 +56,15 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
     }
 
     override fun getImage(user: User, injuryId: Long, imageId: Long): InputStream {
-        val injury = injuryRepository.findBy(user, injuryId) ?: throw InjuryNotFoundException(user.email, injuryId)
+        val injury = get(user, injuryId)
+
         if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
         val imageReference = imageReferenceRepository.findById(imageId).get()
         return fileStorage.get(imageReference.key)
     }
 }
 
+class InjuryDoesNotBelongToUserException(user: User, injuryId: Long) : RuntimeException("Injury does not belong to user (${user.id}, $injuryId)")
 class TooManyImagesException(numberOfImages: Int) : RuntimeException("Too many images added to the injury. Maximum number of images allowed is 3, current number is $numberOfImages")
-class InjuryNotFoundException(email: String, id: Long) : RuntimeException("No injury found with: (id: $id, email: $email)")
+class InjuryNotFoundException(id: Long) : RuntimeException("No injury found with id: $id")
 class ImageReferenceNotFoundException(id: Long) : RuntimeException("No imageReference found with id: $id")
