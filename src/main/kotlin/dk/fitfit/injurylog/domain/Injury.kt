@@ -12,4 +12,4 @@ class Injury(val description: String,
              val occurredAt: LocalDateTime = LocalDateTime.now(),
              val loggedAt: LocalDateTime = LocalDateTime.now(),
              @OneToMany(fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT) val imageReferences: MutableList<ImageReference> = mutableListOf(),
-             @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long = 0)
+             @Id @GeneratedValue(strategy = GenerationType.SEQUENCE) val id: Long = 0)
