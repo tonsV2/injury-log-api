@@ -43,7 +43,7 @@ google:
 # NOTE: Must be associated with a valid Google account
 admin:
   user:
-    email: sebastianthegreatful@gmail.com
+    email: ${ADMIN_USER_EMAIL}
 
 aws:
   key: ${AWS_ACCESS_KEY_ID}

@@ -1,6 +1,6 @@
 package dk.fitfit.injurylog
 
-import dk.fitfit.injurylog.configuration.AdminUserConfiguration
+import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
 import dk.fitfit.injurylog.domain.Role
 import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.service.RoleService
@@ -23,7 +23,7 @@ object Application {
 }
 
 @Singleton
-open class UserLoader(private val adminUserConfiguration: AdminUserConfiguration, private val userService: UserService, private val roleService: RoleService) : ApplicationEventListener<ServiceStartedEvent> {
+open class UserLoader(private val authenticationConfiguration: AuthenticationConfiguration, private val userService: UserService, private val roleService: RoleService) : ApplicationEventListener<ServiceStartedEvent> {
     @Async
     override fun onApplicationEvent(event: ServiceStartedEvent) {
         log.info("Creating admin role")
@@ -33,7 +33,7 @@ open class UserLoader(private val adminUserConfiguration: AdminUserConfiguration
         roleService.findAll().forEach { log.info(it.name) }
 
         log.info("Creating admin user")
-        val user = User(adminUserConfiguration.adminUserEmail)
+        val user = User(authenticationConfiguration.adminEmail)
         user.roles.add(role)
         val saved = userService.save(user)
         log.info("Admin user: ${saved.email}")
