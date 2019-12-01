@@ -40,6 +40,11 @@ class InjuryController(private val userService: UserService, private val injuryS
         injuryService.save(injury).toInjuryResponse()
     }
 
+    @Delete("/injuries/{id}")
+    fun deleteInjury(id: Long, principal: Principal) = userService.getByEmail(principal.name).let {
+        injuryService.delete(id)
+    }
+
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Post("/injuries/{id}/images")
     fun postImage(id: Long, file: CompletedFileUpload, principal: Principal): HttpResponse<*>? {

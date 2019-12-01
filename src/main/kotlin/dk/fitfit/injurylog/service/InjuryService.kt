@@ -10,6 +10,7 @@ interface InjuryService {
     fun save(injury: Injury): Injury
     fun findAll(user: User): Iterable<Injury>
     fun get(user: User, injuryId: Long): Injury
+    fun delete(injuryId: Long)
     fun addImage(user: User, injuryId: Long, file: CompletedFileUpload): ImageReference?
     fun deleteImage(user: User, injuryId: Long, imageId: Long)
     fun getImage(user: User, injuryId: Long, imageId: Long): InputStream
