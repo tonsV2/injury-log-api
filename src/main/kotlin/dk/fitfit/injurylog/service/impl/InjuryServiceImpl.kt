@@ -5,7 +5,7 @@ import dk.fitfit.injurylog.domain.Injury
 import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.repository.ImageReferenceRepository
 import dk.fitfit.injurylog.repository.InjuryRepository
-import dk.fitfit.injurylog.service.FileStorage
+import dk.fitfit.injurylog.service.FileStorageService
 import dk.fitfit.injurylog.service.InjuryService
 import io.micronaut.http.multipart.CompletedFileUpload
 import java.io.InputStream
@@ -14,7 +14,7 @@ import javax.transaction.Transactional
 
 @Singleton
 @Transactional
-class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private val fileStorage: FileStorage, private val imageReferenceRepository: ImageReferenceRepository) : InjuryService {
+class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private val fileStorageService: FileStorageService, private val imageReferenceRepository: ImageReferenceRepository) : InjuryService {
     override fun save(injury: Injury): Injury = injuryRepository.save(injury)
 
     override fun findAll(user: User): Iterable<Injury> = injuryRepository.findAll(user)
@@ -36,7 +36,7 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
 
         if (injury.imageReferences.size >= 3) throw TooManyImagesException(injury.imageReferences.size)
         val key = "${injury.id}:${file.filename}"
-        return fileStorage.put(key, file)?.let {
+        return fileStorageService.put(key, file)?.let {
             val imageReference = imageReferenceRepository.save(ImageReference(it))
             injury.imageReferences.add(imageReference)
             injuryRepository.save(injury)
@@ -49,7 +49,7 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
 
         if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
         imageReferenceRepository.findById(imageId).ifPresent {
-            fileStorage.delete(it.key)
+            fileStorageService.delete(it.key)
             injury.imageReferences.remove(it)
             imageReferenceRepository.delete(it)
         }
@@ -60,7 +60,7 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private 
 
         if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
         val imageReference = imageReferenceRepository.findById(imageId).get()
-        return fileStorage.get(imageReference.key)
+        return fileStorageService.get(imageReference.key)
     }
 }
 

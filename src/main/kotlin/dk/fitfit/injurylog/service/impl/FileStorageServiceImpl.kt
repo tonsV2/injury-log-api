@@ -9,7 +9,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder
 import dk.fitfit.injurylog.configuration.AwsConfiguration
-import dk.fitfit.injurylog.service.FileStorage
+import dk.fitfit.injurylog.service.FileStorageService
 import io.micronaut.http.MediaType
 import io.micronaut.http.multipart.CompletedFileUpload
 import io.micronaut.http.multipart.FileUpload
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 // Inspiration: https://github.com/micronaut-guides/micronaut-file-upload/blob/master/complete/src/main/java/example/micronaut/S3FileRepository.java
 
 @Singleton
-class S3FileRepository(private val awsConfiguration: AwsConfiguration) : FileStorage, Closeable {
+class FileStorageServiceImpl(private val awsConfiguration: AwsConfiguration) : FileStorageService, Closeable {
     private val bucketName: String = awsConfiguration.bucket
     private val s3Client: AmazonS3 = AmazonS3Client.builder()
             .withRegion(awsConfiguration.region)
@@ -73,6 +73,6 @@ class S3FileRepository(private val awsConfiguration: AwsConfiguration) : FileSto
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(S3FileRepository::class.java)
+        private val LOG = LoggerFactory.getLogger(FileStorageServiceImpl::class.java)
     }
 }
