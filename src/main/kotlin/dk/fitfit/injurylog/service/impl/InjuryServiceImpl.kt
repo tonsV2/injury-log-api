@@ -14,7 +14,9 @@ import javax.transaction.Transactional
 
 @Singleton
 @Transactional
-class InjuryServiceImpl(private val injuryRepository: InjuryRepository, private val fileStorageService: FileStorageService, private val imageReferenceRepository: ImageReferenceRepository) : InjuryService {
+class InjuryServiceImpl(private val injuryRepository: InjuryRepository,
+                        private val fileStorageService: FileStorageService,
+                        private val imageReferenceRepository: ImageReferenceRepository) : InjuryService {
     override fun save(injury: Injury): Injury = injuryRepository.save(injury)
 
     override fun findAll(user: User): Iterable<Injury> = injuryRepository.findAll(user)
