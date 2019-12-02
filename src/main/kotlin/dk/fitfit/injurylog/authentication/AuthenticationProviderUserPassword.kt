@@ -4,7 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
-import dk.fitfit.injurylog.configuration.AuthenticationProviderConfiguration
+import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
 import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.service.UserService
 import dk.fitfit.injurylog.service.impl.UserNotFoundException
@@ -14,7 +14,7 @@ import org.reactivestreams.Publisher
 import javax.inject.Singleton
 
 @Singleton
-class AuthenticationProviderUserPassword(private val authenticationProviderConfiguration: AuthenticationProviderConfiguration, private val userService: UserService) : AuthenticationProvider {
+class AuthenticationProviderUserPassword(private val authenticationConfiguration: AuthenticationConfiguration, private val userService: UserService) : AuthenticationProvider {
     override fun authenticate(authenticationRequest: AuthenticationRequest<*, *>?): Publisher<AuthenticationResponse> {
         if (authenticationRequest != null && authenticationRequest.identity == "_" && authenticationRequest.secret != null) {
             verifyToken(authenticationRequest.secret as String)?.let {
@@ -41,7 +41,7 @@ class AuthenticationProviderUserPassword(private val authenticationProviderConfi
         val transport = NetHttpTransport()
         val jsonFactory = JacksonFactory()
         val verifier = GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-                .setAudience(listOf(authenticationProviderConfiguration.serverClientId))
+                .setAudience(listOf(authenticationConfiguration.serverClientId))
                 .build()
         val token = verifier.verify(secret)
         return token?.payload

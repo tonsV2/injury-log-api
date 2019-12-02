@@ -68,6 +68,8 @@ dependencies {
     runtimeOnly "io.micronaut.configuration:micronaut-jdbc-hikari"
 
     compile 'com.amazonaws:aws-java-sdk-s3:1.11.414'
+
+    compile 'io.github.microutils:kotlin-logging:1.7.7'
 }
 
 test.classpath += configurations.developmentOnly

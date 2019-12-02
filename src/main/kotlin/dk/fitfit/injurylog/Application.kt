@@ -9,8 +9,10 @@ import io.micronaut.context.event.ApplicationEventListener
 import io.micronaut.discovery.event.ServiceStartedEvent
 import io.micronaut.runtime.Micronaut
 import io.micronaut.scheduling.annotation.Async
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import javax.inject.Singleton
+
+private val logger = KotlinLogging.logger {}
 
 object Application {
     @JvmStatic
@@ -23,23 +25,26 @@ object Application {
 }
 
 @Singleton
-open class UserLoader(private val authenticationConfiguration: AuthenticationConfiguration, private val userService: UserService, private val roleService: RoleService) : ApplicationEventListener<ServiceStartedEvent> {
+open class UserLoader(private val authenticationConfiguration: AuthenticationConfiguration,
+                      private val userService: UserService,
+                      private val roleService: RoleService) : ApplicationEventListener<ServiceStartedEvent> {
     @Async
     override fun onApplicationEvent(event: ServiceStartedEvent) {
-        log.info("Creating admin role")
         val role = roleService.save(Role(Role.ADMIN))
-        log.info("Role: ${role.name}")
-        log.info("All roles:")
-        roleService.findAll().forEach { log.info(it.name) }
+        val roles = roleService.findAll()
 
-        log.info("Creating admin user")
         val user = User(authenticationConfiguration.adminEmail)
         user.roles.add(role)
         val saved = userService.save(user)
-        log.info("Admin user: ${saved.email}")
-    }
 
-    companion object {
-        private val log = LoggerFactory.getLogger(UserLoader::class.java)
+        val message = """
+            Creating admin role
+            Role: ${role.name}
+            All roles: ${roles.joinToString { it.name }}
+            Creating admin user
+            Admin user: ${saved.email}
+        """.trimIndent()
+
+        logger.info { message }
     }
 }

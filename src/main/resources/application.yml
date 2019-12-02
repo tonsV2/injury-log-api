@@ -40,9 +40,9 @@ google:
     client:
       id: 588170906559-raeponfqqduusmmpnqjd8a422ccq8cp0.apps.googleusercontent.com
 
-# NOTE: Must be associated with a valid Google account
 admin:
   user:
+    # NOTE: Must be associated with a valid Google account
     email: ${ADMIN_USER_EMAIL}
 
 aws:
