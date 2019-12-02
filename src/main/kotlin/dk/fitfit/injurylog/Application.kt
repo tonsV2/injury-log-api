@@ -27,7 +27,7 @@ open class UserLoader(private val authenticationConfiguration: AuthenticationCon
     @Async
     override fun onApplicationEvent(event: ServiceStartedEvent) {
         log.info("Creating admin role")
-        val role = roleService.save(Role("ROLE_ADMIN"))
+        val role = roleService.save(Role(Role.ADMIN))
         log.info("Role: ${role.name}")
         log.info("All roles:")
         roleService.findAll().forEach { log.info(it.name) }

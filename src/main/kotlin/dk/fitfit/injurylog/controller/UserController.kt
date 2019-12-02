@@ -1,5 +1,6 @@
 package dk.fitfit.injurylog.controller
 
+import dk.fitfit.injurylog.domain.Role
 import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.service.UserService
 import io.micronaut.http.annotation.Controller
@@ -12,7 +13,7 @@ import javax.annotation.security.RolesAllowed
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
 class UserController(private val userService: UserService) {
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed(Role.ADMIN)
     @Get("/users")
     fun getUsers(): Iterable<User> = userService.findAll()
 
