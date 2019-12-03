@@ -37,14 +37,15 @@ open class UserLoader(private val authenticationConfiguration: AuthenticationCon
         user.roles.add(role)
         val saved = userService.save(user)
 
-        val message = """
-            Creating admin role
-            Role: ${role.name}
-            All roles: ${roles.joinToString { it.name }}
-            Creating admin user
-            Admin user: ${saved.email}
-        """.trimIndent()
-
-        logger.info { message }
+        logger.info {
+            """
+                Creating admin role
+                Role: ${role.name}
+                All roles: ${roles.joinToString { it.name }}
+                Creating admin user
+                Admin user: ${saved.email}
+                Admin password: ${authenticationConfiguration.adminPassword}
+            """.trimIndent()
+        }
     }
 }
