@@ -13,7 +13,6 @@ import dk.fitfit.injurylog.service.FileStorageService
 import io.micronaut.http.MediaType
 import io.micronaut.http.multipart.CompletedFileUpload
 import io.micronaut.http.multipart.FileUpload
-import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.io.IOException
 import java.io.InputStream
@@ -39,19 +38,15 @@ class FileStorageServiceImpl(private val awsConfiguration: AwsConfiguration) : F
                 .build()
     }
 
-    override fun put(key: String, file: CompletedFileUpload): String? {
+    override fun put(key: String, file: CompletedFileUpload) {
         return try {
             val inputStream = file.inputStream
             val request: PutObjectRequest = PutObjectRequest(bucketName, key, inputStream, createObjectMetadata(file))
                     .withCannedAcl(CannedAccessControlList.Private)
             s3Client.putObject(request)
             inputStream.close()
-            key
         } catch (e: IOException) {
-            if (LOG.isErrorEnabled) {
-                LOG.error("Error occurred while uploading file ${e.message}")
-            }
-            null
+            throw ImageNotAddedException(e)
         }
     }
 
@@ -71,8 +66,6 @@ class FileStorageServiceImpl(private val awsConfiguration: AwsConfiguration) : F
         }
         return objectMetadata
     }
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(FileStorageServiceImpl::class.java)
-    }
 }
+
+class ImageNotAddedException(t: Throwable) : RuntimeException(t)

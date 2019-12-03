@@ -35,13 +35,13 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository,
 
     override fun delete(injuryId: Long) = injuryRepository.deleteById(injuryId)
 
-    override fun addImage(user: User, injuryId: Long, file: CompletedFileUpload): ImageReference? {
+    override fun addImage(user: User, injuryId: Long, file: CompletedFileUpload): ImageReference {
         val injury = get(user, injuryId)
 
         if (injury.imageReferences.size >= 3) throw TooManyImagesException(injury.imageReferences.size)
         val key = "${injury.id}:${file.filename}"
-        return fileStorageService.put(key, file)?.let {
-            val imageReference = imageReferenceRepository.save(ImageReference(it))
+        return fileStorageService.put(key, file).let {
+            val imageReference = imageReferenceRepository.save(ImageReference(key))
             injury.imageReferences.add(imageReference)
             injuryRepository.save(injury)
             imageReference
