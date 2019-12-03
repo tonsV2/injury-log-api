@@ -7,7 +7,8 @@ import io.micronaut.test.annotation.MicronautTest
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -15,13 +16,11 @@ import org.junit.jupiter.api.fail
 @MicronautTest
 internal open class UserServiceImplTest {
     private lateinit var userService: UserService
-
-    private val userRepository: UserRepository = mockk(relaxUnitFun = true)
-
+    private val userRepository = mockk<UserRepository>()
 
     @BeforeEach
     fun setUp() {
-        MockKAnnotations.init(this, relaxUnitFun = true)
+        MockKAnnotations.init(this)
 
         userService = UserServiceImpl(userRepository)
     }
@@ -29,32 +28,33 @@ internal open class UserServiceImplTest {
     @Test
     fun save() {
         val email = "email"
-        val id = 666L
-        val user = User(email)
-        every { userRepository.save(any<User>()) } returns User(email = email, id = id)
+        val id = 123L
+        val user = User(email = email, id = id)
+        every { userRepository.save(user) } returns user
 
         val saved = userService.save(user)
 
-        Assertions.assertEquals(saved.email, email)
-        Assertions.assertEquals(saved.id, id)
+        assertEquals(saved.email, email)
+        assertEquals(saved.id, id)
     }
 
     @Test
     fun getByEmail() {
         val email = "email"
         val id = 666L
-        every { userRepository.findByEmail(email) } returns User(email = email, id = id)
+        val user = User(email = email, id = id)
+        every { userRepository.findByEmail(email) } returns user
 
-        val user = userService.getByEmail(email)
+        val gotten = userService.getByEmail(email)
 
-        Assertions.assertEquals(user.email, email)
-        Assertions.assertEquals(user.id, id)
+        assertEquals(gotten.email, email)
+        assertEquals(gotten.id, id)
     }
 
     @Test
     fun getByEmail_notFound() {
         val email = "email"
-        every { userRepository.findByEmail(email) } throws UserNotFoundException(email)
+        every { userRepository.findByEmail(email) } returns null
 
         try {
             userService.getByEmail(email)
@@ -66,15 +66,16 @@ internal open class UserServiceImplTest {
 
     @Test
     fun findAll() {
-        val user0 = User("email", id = 666L)
+        val user0 = User("email", id = 123L)
         val email1 = "email2"
-        val id1 = 667L
+        val id1 = 124L
         val user1 = User(email = email1, id = id1)
         every { userRepository.findAll() } returns listOf(user0, user1)
 
         val users = userService.findAll()
 
-        Assertions.assertTrue(users.contains(user0))
-        Assertions.assertTrue(users.contains(user1))
+        assertEquals(users.count(), 2)
+        assertTrue(users.contains(user0))
+        assertTrue(users.contains(user1))
     }
 }

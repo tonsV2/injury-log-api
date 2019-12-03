@@ -2,8 +2,8 @@ package dk.fitfit.injurylog.repository
 
 import dk.fitfit.injurylog.domain.User
 import io.micronaut.test.annotation.MicronautTest
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import javax.inject.Inject
 
@@ -14,14 +14,19 @@ internal open class UserRepositoryTest {
     @Inject
     lateinit var userRepository: UserRepository
 
-    @BeforeEach
-    fun setUp() {
+    @Test
+    fun findByEmail() {
         userRepository.save(User(email))
+
+        val user = userRepository.findByEmail(email)
+
+        assertNotNull(user)
     }
 
     @Test
-    fun findByEmail() {
+    fun findByEmail_notFound() {
         val user = userRepository.findByEmail(email)
-        Assertions.assertNotNull(user)
+
+        assertNull(user)
     }
 }
