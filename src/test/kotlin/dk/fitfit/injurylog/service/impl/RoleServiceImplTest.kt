@@ -6,11 +6,10 @@ import dk.fitfit.injurylog.service.RoleService
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 
 internal class RoleServiceImplTest {
     private lateinit var roleService: RoleService
@@ -34,6 +33,7 @@ internal class RoleServiceImplTest {
 
         assertEquals(saved.id, id)
         assertEquals(saved.name, name)
+        verify(exactly = 1) { roleRepository.save(role) }
     }
 
     @Test
@@ -51,6 +51,7 @@ internal class RoleServiceImplTest {
         assertEquals(roles.count(), 2)
         assertTrue(roles.contains(role0))
         assertTrue(roles.contains(role1))
+        verify(exactly = 1) { roleRepository.findAll() }
     }
 
     @Test
@@ -64,6 +65,7 @@ internal class RoleServiceImplTest {
 
         assertEquals(found.id, id)
         assertEquals(found.name, name)
+        verify(exactly = 1) { roleRepository.findByName(name) }
     }
 
     @Test
@@ -74,6 +76,7 @@ internal class RoleServiceImplTest {
         assertThrows(RoleNotFoundException::class.java) {
             roleService.getRole(name)
         }
-        fail("RoleNotFoundException not thrown")
+
+        verify(exactly = 1) { roleRepository.findByName(name) }
     }
 }

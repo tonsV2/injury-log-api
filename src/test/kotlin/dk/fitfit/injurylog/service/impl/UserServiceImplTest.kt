@@ -7,11 +7,10 @@ import io.micronaut.test.annotation.MicronautTest
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 
 @MicronautTest
 internal open class UserServiceImplTest {
@@ -36,6 +35,8 @@ internal open class UserServiceImplTest {
 
         assertEquals(saved.email, email)
         assertEquals(saved.id, id)
+
+        verify(exactly = 1) { userRepository.save(user) }
     }
 
     @Test
@@ -49,6 +50,8 @@ internal open class UserServiceImplTest {
 
         assertEquals(gotten.email, email)
         assertEquals(gotten.id, id)
+
+        verify(exactly = 1) { userRepository.findByEmail(email) }
     }
 
     @Test
@@ -59,7 +62,8 @@ internal open class UserServiceImplTest {
         assertThrows(UserNotFoundException::class.java) {
             userService.getByEmail(email)
         }
-        fail("UserNotFoundException not thrown")
+
+        verify(exactly = 1) { userRepository.findByEmail(email) }
     }
 
     @Test
@@ -75,5 +79,6 @@ internal open class UserServiceImplTest {
         assertEquals(users.count(), 2)
         assertTrue(users.contains(user0))
         assertTrue(users.contains(user1))
+        verify(exactly = 1) { userRepository.findAll() }
     }
 }
