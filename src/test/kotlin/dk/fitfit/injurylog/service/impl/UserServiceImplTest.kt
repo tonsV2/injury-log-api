@@ -42,7 +42,7 @@ internal open class UserServiceImplTest {
     @Test
     fun getByEmail() {
         val email = "email"
-        val id = 666L
+        val id = 123L
         val user = User(email = email, id = id)
         every { userRepository.findByEmail(email) } returns user
 
