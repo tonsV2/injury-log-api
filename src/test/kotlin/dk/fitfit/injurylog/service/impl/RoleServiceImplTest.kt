@@ -55,13 +55,13 @@ internal class RoleServiceImplTest {
     }
 
     @Test
-    fun getRole() {
+    fun get() {
         val id = 123L
         val name = Role.ADMIN
         val role = Role(name = name, id = id)
         every { roleRepository.findByName(name) } returns role
 
-        val found = roleService.getRole(name)
+        val found = roleService.get(name)
 
         assertEquals(found.id, id)
         assertEquals(found.name, name)
@@ -69,12 +69,12 @@ internal class RoleServiceImplTest {
     }
 
     @Test
-    fun getRole_notFound() {
+    fun get_notFound() {
         val name = Role.ADMIN
         every { roleRepository.findByName(name) } returns null
 
         assertThrows(RoleNotFoundException::class.java) {
-            roleService.getRole(name)
+            roleService.get(name)
         }
 
         verify(exactly = 1) { roleRepository.findByName(name) }

@@ -11,7 +11,7 @@ open class RoleServiceImpl(private val roleRepository: RoleRepository) : RoleSer
 
     override fun findAll(): Iterable<Role> = roleRepository.findAll()
 
-    override fun getRole(roleName: String): Role = roleRepository.findByName(roleName) ?: throw RoleNotFoundException(roleName)
+    override fun get(roleName: String): Role = roleRepository.findByName(roleName) ?: throw RoleNotFoundException(roleName)
 }
 
 class RoleNotFoundException(roleName: String) : RuntimeException("Role not found: $roleName")
