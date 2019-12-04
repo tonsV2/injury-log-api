@@ -56,10 +56,8 @@ internal open class UserServiceImplTest {
         val email = "email"
         every { userRepository.findByEmail(email) } returns null
 
-        try {
+        assertThrows(UserNotFoundException::class.java) {
             userService.getByEmail(email)
-        } catch (e: UserNotFoundException) {
-            return
         }
         fail("UserNotFoundException not thrown")
     }

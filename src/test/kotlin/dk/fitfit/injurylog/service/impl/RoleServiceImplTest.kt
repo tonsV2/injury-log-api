@@ -71,10 +71,8 @@ internal class RoleServiceImplTest {
         val name = Role.ADMIN
         every { roleRepository.findByName(name) } returns null
 
-        try {
+        assertThrows(RoleNotFoundException::class.java) {
             roleService.getRole(name)
-        } catch (e: RoleNotFoundException) {
-            return
         }
         fail("RoleNotFoundException not thrown")
     }
