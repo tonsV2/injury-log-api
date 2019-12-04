@@ -33,7 +33,10 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository,
         return injury
     }
 
-    override fun delete(injuryId: Long) = injuryRepository.deleteById(injuryId)
+    override fun delete(user: User, injuryId: Long) {
+        val injury = get(user, injuryId)
+        injuryRepository.delete(injury)
+    }
 
     override fun addImage(user: User, injuryId: Long, file: CompletedFileUpload): ImageReference {
         val injury = get(user, injuryId)

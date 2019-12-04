@@ -42,7 +42,7 @@ class InjuryController(private val userService: UserService, private val injuryS
 
     @Delete("/injuries/{id}")
     fun deleteInjury(id: Long, principal: Principal) = userService.getByEmail(principal.name).let {
-        injuryService.delete(id)
+        injuryService.delete(it, id)
     }
 
     @Consumes(MediaType.MULTIPART_FORM_DATA)
