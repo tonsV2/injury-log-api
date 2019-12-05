@@ -44,6 +44,7 @@ admin:
   user:
     # NOTE: Must be associated with a valid Google account
     email: ${ADMIN_USER_EMAIL}
+    password: ${random.uuid}
 
 aws:
   key: ${AWS_ACCESS_KEY_ID}
@@ -51,5 +52,3 @@ aws:
   s3:
     region: ${AWS_S3_REGION}
     bucket: ${AWS_S3_BUCKET}
-    multipart-upload-threshold: 5248000
-    max-upload-threads: 5
