@@ -2,27 +2,17 @@ package dk.fitfit.injurylog.service.impl
 
 import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.repository.UserRepository
-import dk.fitfit.injurylog.service.UserService
 import io.micronaut.test.annotation.MicronautTest
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @MicronautTest
 internal open class UserServiceImplTest {
-    private lateinit var userService: UserService
     private val userRepository = mockk<UserRepository>()
-
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-
-        userService = UserServiceImpl(userRepository)
-    }
+    private val userService = UserServiceImpl(userRepository)
 
     @Test
     fun save() {

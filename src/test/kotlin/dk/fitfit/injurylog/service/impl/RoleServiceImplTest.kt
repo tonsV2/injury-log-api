@@ -2,25 +2,15 @@ package dk.fitfit.injurylog.service.impl
 
 import dk.fitfit.injurylog.domain.Role
 import dk.fitfit.injurylog.repository.RoleRepository
-import dk.fitfit.injurylog.service.RoleService
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class RoleServiceImplTest {
-    private lateinit var roleService: RoleService
     private val roleRepository = mockk<RoleRepository>()
-
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-
-        roleService = RoleServiceImpl(roleRepository)
-    }
+    private val roleService = RoleServiceImpl(roleRepository)
 
     @Test
     fun save() {

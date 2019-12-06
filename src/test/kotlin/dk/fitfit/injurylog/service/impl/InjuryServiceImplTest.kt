@@ -9,7 +9,6 @@ import dk.fitfit.injurylog.service.FileStorageService
 import io.micronaut.http.multipart.CompletedFileUpload
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
@@ -30,11 +29,6 @@ internal class InjuryServiceImplTest {
     private val injury = Injury(description = description, user = user, id = injuryId, imageReferences = imageReferences)
 
     private val injuryService = InjuryServiceImpl(injuryRepository, fileStorageService, imageReferenceRepository)
-
-    @BeforeEach
-    fun setUp() {
-        MockKAnnotations.init(this)
-    }
 
     @Test
     fun save() {
