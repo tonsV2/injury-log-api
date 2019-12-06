@@ -1,5 +1,7 @@
 package dk.fitfit.injurylog.service.impl
 
+import com.amazonaws.AmazonServiceException
+import com.amazonaws.SdkClientException
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.GetObjectRequest
@@ -14,12 +16,15 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.apache.http.client.methods.HttpGet
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.BufferedReader
 import java.io.ByteArrayInputStream
 import java.util.*
 import javax.inject.Inject
+import kotlin.test.assertFailsWith
 
 @MicronautTest
 internal class FileStorageServiceImplTest {
@@ -57,6 +62,48 @@ internal class FileStorageServiceImplTest {
     }
 
     @Test
+    fun put_imageNotAdded_because_sdkClientException() {
+        val file = mockk<CompletedFileUpload>()
+        val key = "key"
+        val fileData = "test data"
+        val inputStream = ByteArrayInputStream(fileData.toByteArray())
+        every { file.inputStream } returns inputStream
+        every { file.contentType } returns Optional.of(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+        every { file.size } returns fileData.length.toLong()
+        val exceptionMessage = "exception message"
+        every { s3Client.putObject(any()) } throws SdkClientException(exceptionMessage)
+
+        val exception = assertFailsWith<ImageNotAddedException> {
+            fileStorageService.put(key, file)
+        }
+
+        assert(exception.message?.contains(exceptionMessage) == true)
+        verify(exactly = 1) { s3Client.putObject(any()) }
+    }
+
+    @Test
+    fun put_imageNotAdded_because_amazonServiceException() {
+        val file = mockk<CompletedFileUpload>()
+        val key = "key"
+        val fileData = "test data"
+        val inputStream = ByteArrayInputStream(fileData.toByteArray())
+        every { file.inputStream } returns inputStream
+        every { file.contentType } returns Optional.of(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+        every { file.size } returns fileData.length.toLong()
+        val exceptionMessage = "exception message"
+        every { s3Client.putObject(any()) } throws AmazonServiceException(exceptionMessage)
+
+        val exception = assertFailsWith<ImageNotAddedException> {
+            fileStorageService.put(key, file)
+        }
+        println(exception.message)
+
+        assert(exception.message?.contains(exceptionMessage) == true)
+
+        verify(exactly = 1) { s3Client.putObject(any()) }
+    }
+
+    @Test
     fun get() {
         val key = "key"
         val getObjectRequest = GetObjectRequest(awsConfiguration.bucket, key)
@@ -66,7 +113,8 @@ internal class FileStorageServiceImplTest {
 
         val s3ObjectInputStream = fileStorageService.get(key)
 
-        // TODO: Possible assert that inputStream == s3ObjectInputStream
+        val content = s3ObjectInputStream.bufferedReader().use(BufferedReader::readText)
+        assertEquals(fileData, content)
         verify(exactly = 1) { s3Client.getObject(getObjectRequest).objectContent }
     }
 
@@ -81,7 +129,6 @@ internal class FileStorageServiceImplTest {
     }
 
     // TODO: This seems a bit... Limited
-
     @Test
     fun s3ClientFactory() {
         val s3ClientFactory = S3ClientFactory()

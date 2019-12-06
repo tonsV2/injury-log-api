@@ -1,5 +1,7 @@
 package dk.fitfit.injurylog.service.impl
 
+import com.amazonaws.AmazonServiceException
+import com.amazonaws.SdkClientException
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.CannedAccessControlList.Private
@@ -12,7 +14,6 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.http.MediaType
 import io.micronaut.http.multipart.CompletedFileUpload
 import io.micronaut.http.multipart.FileUpload
-import java.io.IOException
 import java.io.InputStream
 import javax.inject.Singleton
 
@@ -37,7 +38,9 @@ class FileStorageServiceImpl(private val awsConfiguration: AwsConfiguration, pri
                         .withCannedAcl(Private)
                 s3Client.putObject(request)
             }
-        } catch (e: IOException) {
+        } catch (e: SdkClientException) {
+            throw ImageNotAddedException(e)
+        } catch (e: AmazonServiceException) {
             throw ImageNotAddedException(e)
         }
     }

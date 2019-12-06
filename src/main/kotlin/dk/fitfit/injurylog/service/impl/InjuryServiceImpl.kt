@@ -41,10 +41,11 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository,
     override fun addImage(user: User, injuryId: Long, file: CompletedFileUpload): ImageReference {
         val injury = get(user, injuryId)
 
-        if (injury.imageReferences.size >= 3) throw TooManyImagesException(injury.imageReferences.size)
+        if (injury.imageReferences.size > 3) throw TooManyImagesException(injury.imageReferences.size)
         val key = "${injury.id}:${file.filename}"
         return fileStorageService.put(key, file).let {
-            val imageReference = imageReferenceRepository.save(ImageReference(key))
+            val imageReference = ImageReference(key)
+            imageReferenceRepository.save(imageReference)
             injury.imageReferences.add(imageReference)
             injuryRepository.save(injury)
             imageReference
@@ -57,6 +58,7 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository,
         if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
         imageReferenceRepository.findById(imageId).ifPresent {
             fileStorageService.delete(it.key)
+            // TODO: Assert remove returns true
             injury.imageReferences.remove(it)
             imageReferenceRepository.delete(it)
         }
@@ -65,9 +67,11 @@ class InjuryServiceImpl(private val injuryRepository: InjuryRepository,
     override fun getImage(user: User, injuryId: Long, imageId: Long): InputStream {
         val injury = get(user, injuryId)
 
+        // TODO: Make two exceptions? One for not found in db and one for not found on injury... Or is this redundant in the first place
         if (injury.imageReferences.none { it.id == imageId }) throw ImageReferenceNotFoundException(imageId)
-        val imageReference = imageReferenceRepository.findById(imageId).get()
-        return fileStorageService.get(imageReference.key)
+        val optional = imageReferenceRepository.findById(imageId)
+        if (optional.isEmpty) throw ImageReferenceNotFoundException(imageId)
+        return fileStorageService.get(optional.get().key)
     }
 }
 
