@@ -45,8 +45,8 @@ internal class InjuryServiceImplTest {
 
         val saved = injuryService.save(injury)
 
-        assertEquals(saved.id, injuryId)
-        assertEquals(saved.description, description)
+        assertEquals(injuryId, saved.id)
+        assertEquals(description, saved.description)
         verify(exactly = 1) { injuryRepository.save(injury) }
     }
 
@@ -59,7 +59,7 @@ internal class InjuryServiceImplTest {
 
         val injuries = injuryService.findAll(user)
 
-        assertEquals(injuries.count(), 2)
+        assertEquals(2, injuries.count())
         assertTrue(injuries.contains(injury))
         assertTrue(injuries.contains(injury1))
         verify(exactly = 1) { injuryRepository.findAll(user) }
@@ -96,8 +96,8 @@ internal class InjuryServiceImplTest {
 
         val found = injuryService.get(user, userId)
 
-        assertEquals(found.id, userId)
-        assertEquals(found.description, description)
+        assertEquals(userId, found.id)
+        assertEquals(description, found.description)
         verify(exactly = 1) { injuryRepository.findById(userId) }
     }
 

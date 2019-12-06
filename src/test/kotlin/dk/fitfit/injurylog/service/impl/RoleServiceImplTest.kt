@@ -31,8 +31,8 @@ internal class RoleServiceImplTest {
 
         val saved = roleService.save(role)
 
-        assertEquals(saved.id, id)
-        assertEquals(saved.name, name)
+        assertEquals(id, saved.id)
+        assertEquals(name, saved.name)
         verify(exactly = 1) { roleRepository.save(role) }
     }
 
@@ -48,7 +48,7 @@ internal class RoleServiceImplTest {
 
         val roles = roleService.findAll()
 
-        assertEquals(roles.count(), 2)
+        assertEquals(2, roles.count())
         assertTrue(roles.contains(role0))
         assertTrue(roles.contains(role1))
         verify(exactly = 1) { roleRepository.findAll() }
@@ -63,8 +63,8 @@ internal class RoleServiceImplTest {
 
         val found = roleService.get(name)
 
-        assertEquals(found.id, id)
-        assertEquals(found.name, name)
+        assertEquals(id, found.id)
+        assertEquals(name, found.name)
         verify(exactly = 1) { roleRepository.findByName(name) }
     }
 

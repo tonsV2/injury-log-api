@@ -33,8 +33,8 @@ internal open class UserServiceImplTest {
 
         val saved = userService.save(user)
 
-        assertEquals(saved.email, email)
-        assertEquals(saved.id, id)
+        assertEquals(email, saved.email)
+        assertEquals(id, saved.id)
 
         verify(exactly = 1) { userRepository.save(user) }
     }
@@ -48,8 +48,8 @@ internal open class UserServiceImplTest {
 
         val gotten = userService.getByEmail(email)
 
-        assertEquals(gotten.email, email)
-        assertEquals(gotten.id, id)
+        assertEquals(email, gotten.email)
+        assertEquals(id, gotten.id)
 
         verify(exactly = 1) { userRepository.findByEmail(email) }
     }
@@ -76,7 +76,7 @@ internal open class UserServiceImplTest {
 
         val users = userService.findAll()
 
-        assertEquals(users.count(), 2)
+        assertEquals(2, users.count())
         assertTrue(users.contains(user0))
         assertTrue(users.contains(user1))
         verify(exactly = 1) { userRepository.findAll() }
