@@ -44,7 +44,6 @@ admin:
   user:
     # NOTE: Must be associated with a valid Google account
     email: ${ADMIN_USER_EMAIL}
-    password: ${random.uuid}
 
 aws:
   key: ${AWS_ACCESS_KEY_ID}
