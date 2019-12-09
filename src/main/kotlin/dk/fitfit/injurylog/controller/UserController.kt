@@ -18,5 +18,5 @@ class UserController(private val userService: UserService) {
     fun getUsers(): Iterable<User> = userService.findAll()
 
     @Get("/principal")
-    fun getUsers(principal: Principal): Principal = principal
+    fun getPrincipal(principal: Principal): Principal = principal
 }
