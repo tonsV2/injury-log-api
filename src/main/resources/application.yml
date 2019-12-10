@@ -15,6 +15,9 @@ micronaut:
           secret:
             generator:
               secret: ${JWT_SIGNATURES_GENERATOR_SECRET}
+    http:
+      client:
+        read-timeout: 100s
 
 datasources:
   default:
@@ -40,10 +43,15 @@ google:
     client:
       id: 588170906559-raeponfqqduusmmpnqjd8a422ccq8cp0.apps.googleusercontent.com
 
-admin:
-  user:
+users:
+  admin:
     # NOTE: Must be associated with a valid Google account
     email: ${ADMIN_USER_EMAIL}
+    password: ${random.uuid}
+  test:
+    # NOTE: This doesn't have to be a valid email
+    email: test@test.com
+    password: ${random.uuid}
 
 aws:
   key: ${AWS_ACCESS_KEY_ID}

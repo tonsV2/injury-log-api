@@ -33,9 +33,14 @@ open class UserLoader(private val authenticationConfiguration: AuthenticationCon
         val role = roleService.save(Role(Role.ADMIN))
         val roles = roleService.findAll()
 
-        val user = User(authenticationConfiguration.adminEmail)
-        user.roles.add(role)
-        val saved = userService.save(user)
+        val adminUser = User(authenticationConfiguration.adminUserEmail)
+        adminUser.roles.add(role)
+        val savedAdmin = userService.save(adminUser)
+
+        val testUser = User(authenticationConfiguration.testUserEmail)
+        val savedTest = userService.save(testUser)
+
+        val users = userService.findAll()
 
         logger.info {
             """
@@ -43,8 +48,12 @@ open class UserLoader(private val authenticationConfiguration: AuthenticationCon
                 Role: ${role.name}
                 All roles: ${roles.joinToString { it.name }}
                 Creating admin user
-                Admin user: ${saved.email}
-                Admin password: ${authenticationConfiguration.adminPassword}
+                Email: ${savedAdmin.email}
+                Password: ${authenticationConfiguration.adminUserPassword}
+                Creating test user
+                Email: ${savedTest.email}
+                Password: ${authenticationConfiguration.testUserPassword}
+                All users: ${users.joinToString { it.email }}
             """.trimIndent()
         }
     }

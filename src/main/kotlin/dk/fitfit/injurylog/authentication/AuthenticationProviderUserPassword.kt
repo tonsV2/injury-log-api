@@ -16,17 +16,32 @@ import javax.inject.Singleton
 @Singleton
 class AuthenticationProviderUserPassword(private val authenticationConfiguration: AuthenticationConfiguration, private val userService: UserService) : AuthenticationProvider {
     override fun authenticate(authenticationRequest: AuthenticationRequest<*, *>?): Publisher<AuthenticationResponse> {
-        if (authenticationRequest != null && authenticationRequest.identity == "_" && authenticationRequest.secret != null) {
-            verifyToken(authenticationRequest.secret as String)?.let {
-                if (it.email != null && it.emailVerified) {
-                    // TODO: If payload.emailVerified == false create AuthenticationFailureReason and pass to AuthenticationFailed
-                    val user = createUserIfNotFound(it.email)
-                    val roles = user.roles.map { role -> role.name }
-                    return Flowable.just<AuthenticationResponse>(UserDetails(it.email, roles))
+        if (authenticationRequest != null) {
+            if (authenticationRequest.identity == "_" && authenticationRequest.secret != null) {
+                verifyToken(authenticationRequest.secret as String)?.let {
+                    if (it.email != null && it.emailVerified) {
+                        // TODO: If payload.emailVerified == false create AuthenticationFailureReason and pass to AuthenticationFailed
+                        val user = createUserIfNotFound(it.email)
+                        val roles = user.roles.map { role -> role.name }
+                        return Flowable.just(UserDetails(it.email, roles))
+                    }
                 }
             }
+
+            if (authenticationRequest.identity == authenticationConfiguration.adminUserEmail && authenticationRequest.secret == authenticationConfiguration.adminUserPassword) {
+                val user = userService.getByEmail(authenticationConfiguration.adminUserEmail)
+                val roles = user.roles.map { role -> role.name }
+                return Flowable.just(UserDetails(authenticationConfiguration.adminUserEmail, roles))
+            }
+
+            if (authenticationRequest.identity == authenticationConfiguration.testUserEmail && authenticationRequest.secret == authenticationConfiguration.testUserPassword) {
+                val user = userService.getByEmail(authenticationConfiguration.testUserEmail)
+                val roles = user.roles.map { role -> role.name }
+                return Flowable.just(UserDetails(authenticationConfiguration.testUserEmail, roles))
+            }
         }
-        return Flowable.just<AuthenticationResponse>(AuthenticationFailed())
+
+        return Flowable.just(AuthenticationFailed())
     }
 
     private fun createUserIfNotFound(email: String): User {
