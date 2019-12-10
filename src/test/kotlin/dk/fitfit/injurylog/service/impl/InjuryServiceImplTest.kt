@@ -31,7 +31,7 @@ internal class InjuryServiceImplTest {
     private val injuryService = InjuryServiceImpl(injuryRepository, fileStorageService, imageReferenceRepository)
 
     @Test
-    fun save() {
+    fun `Saving an Injury`() {
         val description = "description"
         val injury = Injury(description, user, id = injuryId)
 
@@ -45,7 +45,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun findAll() {
+    fun `Find all injuries`() {
         val id1 = 123L
         val description1 = "description"
         val injury1 = Injury(description = description1, user = user, id = id1)
@@ -60,7 +60,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun get_notFound() {
+    fun `Ensure InjuryNotFoundException is thrown if injury is not found`() {
         val id = 123L
         every { injuryRepository.findById(id) } returns Optional.ofNullable<Injury>(null)
 
@@ -72,7 +72,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun get_injuryDoesNotBelongToUser() {
+    fun `Ensure InjuryDoesNotBelongToUserException is thrown if injury does not belong to the user requesting it`() {
         every { injuryRepository.findById(injuryId) } returns Optional.of(injury)
         val notInjuryOwnerId = 321L
         val notInjuryOwner = User(email = email, id = notInjuryOwnerId)
@@ -85,7 +85,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun get() {
+    fun `Get an injury`() {
         every { injuryRepository.findById(userId) } returns Optional.of(injury)
 
         val found = injuryService.get(user, userId)
@@ -96,7 +96,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun delete_notFound() {
+    fun `Ensure deleting an non existing injury results in InjuryNotFoundException`() {
         val id = 123L
         every { injuryRepository.findById(id) } returns Optional.ofNullable<Injury>(null)
 
@@ -108,7 +108,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun delete_injuryDoesNotBelongToUser() {
+    fun `Ensure deleting an injury which does not belong to the user requesting it results in InjuryDoesNotBelongToUserException`() {
         every { injuryRepository.findById(injuryId) } returns Optional.of(injury)
         val notInjuryOwnerId = 321L
         val notInjuryOwner = User(email = email, id = notInjuryOwnerId)
@@ -121,7 +121,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun delete() {
+    fun `Delete an injury`() {
         every { injuryRepository.findById(userId) } returns Optional.of(injury)
         every { injuryRepository.delete(injury) } returns mockk()
 
@@ -132,7 +132,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun addImage() {
+    fun `Add an image to an injury`() {
         // Given
         every { injuryRepository.findById(userId) } returns Optional.of(injury)
 
@@ -167,7 +167,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun addImage_tooManyImages() {
+    fun `Ensure TooManyImagesException is thrown if adding more images than allowed`() {
         val file = mockk<CompletedFileUpload>()
         every { injuryRepository.findById(userId) } returns Optional.of(injury)
         every { injury.imageReferences.size } returns 4
@@ -178,7 +178,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun deleteImage() {
+    fun `Delete image of an injury`() {
         // Given
         val imageId = 123L
         every { injuryRepository.findById(userId) } returns Optional.of(injury)
@@ -207,7 +207,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun deleteImage_imageReferenceNotFound() {
+    fun `Ensure ImageReferenceNotFoundException is thrown if no image reference is found while deleting an injury image`() {
         // Given
         every { injuryRepository.findById(injuryId) } returns Optional.of(injury)
         val notImageId = 321L
@@ -224,7 +224,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun getImage() {
+    fun `Get an image of an injury`() {
         // Given
         val imageId = 123L
         val filename = "filename"
@@ -255,7 +255,7 @@ internal class InjuryServiceImplTest {
     }
 
     @Test
-    fun getImage_imageReferenceNotFound() {
+    fun `Ensure ImageReferenceNotFoundException is thrown if no image reference is found while retrieving an injury image`() {
         every { injuryRepository.findById(injuryId) } returns Optional.of(injury)
         val notImageId = 321L
         val imageId = 123L
