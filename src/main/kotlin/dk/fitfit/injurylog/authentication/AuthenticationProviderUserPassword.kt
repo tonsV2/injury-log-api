@@ -35,9 +35,7 @@ class AuthenticationProviderUserPassword(private val authenticationConfiguration
             }
 
             if (authenticationRequest.identity == authenticationConfiguration.testUserEmail && authenticationRequest.secret == authenticationConfiguration.testUserPassword) {
-                val user = userService.getByEmail(authenticationConfiguration.testUserEmail)
-                val roles = user.roles.map { role -> role.name }
-                return Flowable.just(UserDetails(authenticationConfiguration.testUserEmail, roles))
+                return Flowable.just(UserDetails(authenticationConfiguration.testUserEmail, listOf()))
             }
         }
 
