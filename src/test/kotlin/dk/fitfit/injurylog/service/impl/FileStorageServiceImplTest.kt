@@ -2,7 +2,6 @@ package dk.fitfit.injurylog.service.impl
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.SdkClientException
-import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.GetObjectRequest
 import com.amazonaws.services.s3.model.S3ObjectInputStream
@@ -17,7 +16,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.apache.http.client.methods.HttpGet
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.BufferedReader
@@ -25,6 +23,7 @@ import java.io.ByteArrayInputStream
 import java.util.*
 import javax.inject.Inject
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 
 @MicronautTest
 internal class FileStorageServiceImplTest {
@@ -135,6 +134,6 @@ internal class FileStorageServiceImplTest {
 
         val s3client = s3ClientFactory.s3client(awsConfiguration)
 
-        assertTrue(s3Client is AmazonS3)
+        assertNotNull(s3client)
     }
 }
