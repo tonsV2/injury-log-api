@@ -26,6 +26,9 @@ jib {
         image = "registry.heroku.com/injury-log/web"
         tags = [project.version]
     }
+    container {
+        user = "guest"
+    }
 }
 
 repositories {
