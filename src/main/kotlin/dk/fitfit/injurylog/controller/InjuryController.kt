@@ -20,7 +20,6 @@ import io.micronaut.security.rules.SecurityRule
 import java.security.Principal
 import javax.inject.Singleton
 
-
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
 class InjuryController(private val userService: UserService, private val injuryService: InjuryService) {
@@ -41,8 +40,9 @@ class InjuryController(private val userService: UserService, private val injuryS
     }
 
     @Delete("/injuries/{id}")
-    fun deleteInjury(id: Long, principal: Principal) = userService.getByEmail(principal.name).let {
+    fun deleteInjury(id: Long, principal: Principal): HttpResponse<Any> = userService.getByEmail(principal.name).let {
         injuryService.delete(it, id)
+        return@let HttpResponse.ok()
     }
 
     @Consumes(MediaType.MULTIPART_FORM_DATA)
