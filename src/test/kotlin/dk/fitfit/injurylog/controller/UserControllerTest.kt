@@ -2,7 +2,6 @@ package dk.fitfit.injurylog.controller
 
 import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
 import dk.fitfit.injurylog.domain.User
-import dk.fitfit.injurylog.service.UserService
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Header
 import io.micronaut.http.client.annotation.Client
@@ -22,7 +21,7 @@ interface UserClient {
 }
 
 @MicronautTest
-internal class UserControllerTest(private val userService: UserService) : SecuredControllerTest() {
+internal class UserControllerTest : SecuredControllerTest() {
     @Inject
     lateinit var authenticationConfiguration: AuthenticationConfiguration
 
