@@ -26,7 +26,7 @@ internal open class RoleRepositoryTest {
     }
 
     @Test
-    fun findRole() {
+    fun `Find role by name`() {
         val name = Role.ADMIN
         roleRepository.save(Role(name))
 
@@ -36,7 +36,7 @@ internal open class RoleRepositoryTest {
     }
 
     @Test
-    fun findRole_notFound() {
+    fun `Ensure null is returned when a role isn't found`() {
         val name = Role.ADMIN
 
         val role = roleRepository.findByName(name)
