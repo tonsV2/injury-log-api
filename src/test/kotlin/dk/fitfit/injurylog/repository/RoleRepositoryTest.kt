@@ -14,11 +14,15 @@ internal open class RoleRepositoryTest {
     @Inject
     lateinit var roleRepository: RoleRepository
 
+    @Inject
+    lateinit var userRepository: UserRepository
+
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
 
-        roleRepository.deleteAll()
+        userRepository.deleteAll()
+        roleRepository. deleteAll()
     }
 
     @Test
