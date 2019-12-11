@@ -10,6 +10,7 @@ import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Test
 import javax.inject.Inject
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @Client("/")
 interface UserClient {
@@ -37,7 +38,12 @@ internal class UserControllerTest : SecuredControllerTest() {
         val users = userClient.getUsers(authorization)
 
         // Then
+        val adminUser = users.filter { it.email == authenticationConfiguration.adminUserEmail }.first()
+        val testUser = users.filter { it.email == authenticationConfiguration.testUserEmail }.first()
+
         assertEquals(2, users.count())
+        assertNotNull(adminUser)
+        assertNotNull(testUser)
     }
 
     @Test
