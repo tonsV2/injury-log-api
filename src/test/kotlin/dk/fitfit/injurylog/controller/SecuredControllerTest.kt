@@ -1,4 +1,4 @@
-package dk.fitfit.injurylog.service.impl
+package dk.fitfit.injurylog.controller
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.http.annotation.Body

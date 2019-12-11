@@ -15,9 +15,6 @@ micronaut:
           secret:
             generator:
               secret: ${JWT_SIGNATURES_GENERATOR_SECRET}
-    http:
-      client:
-        read-timeout: 100s
 
 datasources:
   default:
