@@ -1,19 +1,21 @@
 package dk.fitfit.injurylog.controller
 
 import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
+import dk.fitfit.injurylog.domain.ImageReference
 import dk.fitfit.injurylog.dto.InjuryRequest
 import dk.fitfit.injurylog.dto.InjuryResponse
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.annotation.Delete
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Header
-import io.micronaut.http.annotation.Post
+import io.micronaut.http.MediaType
+import io.micronaut.http.MediaType.MULTIPART_FORM_DATA
+import io.micronaut.http.annotation.*
 import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.multipart.MultipartBody
 import io.micronaut.test.annotation.MicronautTest
 import io.mockk.MockKAnnotations
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.File
 import java.time.LocalDateTime
 
 @Client("/")
@@ -29,6 +31,9 @@ interface InjuryClient {
 
     @Delete("/injuries/{id}")
     fun deleteInjury(id: Long, @Header authorization: String): HttpResponse<String?>
+
+    @Post("/injuries/{id}/images", produces = [MULTIPART_FORM_DATA])
+    fun postImage(id: Long, @Body body: MultipartBody, @Header authorization: String): ImageReference
 }
 
 @MicronautTest
@@ -117,8 +122,26 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
     }
 
     @Test
-    fun `Post an image an injury`() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun `Post an image to an injury`() {
+        // Given
+        val description = "description"
+        val occurredAt = LocalDateTime.now()
+        val id = createInjury(description, occurredAt).id
+
+        val path = "src/test/resources/injury_image.png"
+        val file = File(path)
+        val requestBody = MultipartBody.builder()
+                .addPart("file",
+                        file.name,
+                        MediaType.APPLICATION_OCTET_STREAM_TYPE,
+                        file
+                ).build()
+
+        // When
+        val response = injuryClient.postImage(id, requestBody, authorization)
+
+        // Then
+        assertEquals("$id:${file.name}", response.key)
     }
 
     @Test
