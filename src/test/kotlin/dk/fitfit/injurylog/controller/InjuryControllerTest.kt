@@ -1,14 +1,11 @@
 package dk.fitfit.injurylog.controller
 
 import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
+import dk.fitfit.injurylog.controller.client.InjuryClient
 import dk.fitfit.injurylog.domain.ImageReference
 import dk.fitfit.injurylog.dto.InjuryRequest
 import dk.fitfit.injurylog.dto.InjuryResponse
-import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
-import io.micronaut.http.MediaType.MULTIPART_FORM_DATA
-import io.micronaut.http.annotation.*
-import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.multipart.MultipartBody
 import io.micronaut.test.annotation.MicronautTest
 import io.mockk.MockKAnnotations
@@ -18,30 +15,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.LocalDateTime
 import kotlin.test.assertTrue
-
-@Client("/")
-interface InjuryClient {
-    @Post("/injuries")
-    fun postInjury(injuryRequest: InjuryRequest, @Header authorization: String): InjuryResponse
-
-    @Get("/injuries/{id}")
-    fun getInjury(id: Long, @Header authorization: String): InjuryResponse
-
-    @Get("/injuries")
-    fun getInjuries(@Header authorization: String): Iterable<InjuryResponse>
-
-    @Delete("/injuries/{id}")
-    fun deleteInjury(id: Long, @Header authorization: String): HttpResponse<String?>
-
-    @Post("/injuries/{id}/images", produces = [MULTIPART_FORM_DATA])
-    fun postImage(id: Long, @Body body: MultipartBody, @Header authorization: String): ImageReference
-
-    @Get("/injuries/{injuryId}/images/{imageId}")
-    fun getImage(injuryId: Long, imageId: Long, @Header authorization: String): HttpResponse<ByteArray>
-
-    @Delete("/injuries/{injuryId}/images/{imageId}")
-    fun deleteImage(injuryId: Long, imageId: Long, @Header authorization: String): HttpResponse<Any>
-}
 
 @MicronautTest
 internal class InjuryControllerTest(private val authenticationConfiguration: AuthenticationConfiguration, private val injuryClient: InjuryClient) : SecuredControllerTest() {

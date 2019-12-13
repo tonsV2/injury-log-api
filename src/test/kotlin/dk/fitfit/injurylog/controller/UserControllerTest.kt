@@ -1,34 +1,14 @@
 package dk.fitfit.injurylog.controller
 
 import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
-import dk.fitfit.injurylog.domain.User
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Header
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.security.authentication.DefaultAuthentication
+import dk.fitfit.injurylog.controller.client.UserClient
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Test
-import javax.inject.Inject
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-@Client("/")
-interface UserClient {
-    @Get("/principal")
-    fun getPrincipal(@Header authorization: String): DefaultAuthentication
-
-    @Get("/users")
-    fun getUsers(@Header authorization: String): Iterable<User>
-}
-
 @MicronautTest
-internal class UserControllerTest : SecuredControllerTest() {
-    @Inject
-    lateinit var authenticationConfiguration: AuthenticationConfiguration
-
-    @Inject
-    lateinit var userClient: UserClient
-
+internal class UserControllerTest(private val authenticationConfiguration: AuthenticationConfiguration, private val userClient: UserClient) : SecuredControllerTest() {
     @Test
     fun `Get all users`() {
         // Given
