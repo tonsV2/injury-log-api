@@ -15,7 +15,7 @@ internal open class UserRepositoryTest {
     lateinit var userRepository: UserRepository
 
     @Test
-    fun findByEmail() {
+    fun `Find user by email`() {
         userRepository.save(User(email))
 
         val user = userRepository.findByEmail(email)
@@ -24,7 +24,7 @@ internal open class UserRepositoryTest {
     }
 
     @Test
-    fun findByEmail_notFound() {
+    fun `Ensure null is returned when a user isn't found`() {
         val user = userRepository.findByEmail(email)
 
         assertNull(user)

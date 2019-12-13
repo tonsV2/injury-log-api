@@ -42,7 +42,7 @@ internal class FileStorageServiceImplTest {
     }
 
     @Test
-    fun put() {
+    fun `Store an image`() {
         val file = mockk<CompletedFileUpload>()
         val key = "key"
         val fileData = "test data"
@@ -61,7 +61,7 @@ internal class FileStorageServiceImplTest {
     }
 
     @Test
-    fun put_imageNotAdded_because_sdkClientException() {
+    fun `Ensure ImageNotAddedException is thrown in case of SdkClientException`() {
         val file = mockk<CompletedFileUpload>()
         val key = "key"
         val fileData = "test data"
@@ -81,7 +81,7 @@ internal class FileStorageServiceImplTest {
     }
 
     @Test
-    fun put_imageNotAdded_because_amazonServiceException() {
+    fun `Ensure ImageNotAddedException is thrown in case of AmazonServiceException`() {
         val file = mockk<CompletedFileUpload>()
         val key = "key"
         val fileData = "test data"
@@ -103,7 +103,7 @@ internal class FileStorageServiceImplTest {
     }
 
     @Test
-    fun get() {
+    fun `Retrieve an image`() {
         val key = "key"
         val getObjectRequest = GetObjectRequest(awsConfiguration.bucket, key)
         val fileData = "test data"
@@ -118,7 +118,7 @@ internal class FileStorageServiceImplTest {
     }
 
     @Test
-    fun delete() {
+    fun `Delete an image`() {
         val key = "key"
         every { s3Client.deleteObject(awsConfiguration.bucket, key) } returns mockk()
 
@@ -129,7 +129,7 @@ internal class FileStorageServiceImplTest {
 
     // TODO: This seems a bit... Limited
     @Test
-    fun s3ClientFactory() {
+    fun `Ensure factory doesn't return null`() {
         val s3ClientFactory = S3ClientFactory()
 
         val s3client = s3ClientFactory.s3client(awsConfiguration)

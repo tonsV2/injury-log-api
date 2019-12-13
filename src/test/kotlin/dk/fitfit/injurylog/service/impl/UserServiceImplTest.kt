@@ -15,7 +15,7 @@ internal open class UserServiceImplTest {
     private val userService = UserServiceImpl(userRepository)
 
     @Test
-    fun save() {
+    fun `Save an user`() {
         val email = "email"
         val id = 123L
         val user = User(email = email, id = id)
@@ -30,7 +30,7 @@ internal open class UserServiceImplTest {
     }
 
     @Test
-    fun getByEmail() {
+    fun `Get user by email`() {
         val email = "email"
         val id = 123L
         val user = User(email = email, id = id)
@@ -45,7 +45,7 @@ internal open class UserServiceImplTest {
     }
 
     @Test
-    fun getByEmail_notFound() {
+    fun `Ensure UserNotFoundException is thrown if the user isn't found`() {
         val email = "email"
         every { userRepository.findByEmail(email) } returns null
 
@@ -57,7 +57,7 @@ internal open class UserServiceImplTest {
     }
 
     @Test
-    fun findAll() {
+    fun `Find all users`() {
         val user0 = User("email", id = 123L)
         val email1 = "email2"
         val id1 = 124L

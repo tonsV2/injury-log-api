@@ -13,7 +13,7 @@ internal class RoleServiceImplTest {
     private val roleService = RoleServiceImpl(roleRepository)
 
     @Test
-    fun save() {
+    fun `Save role`() {
         val id = 123L
         val name = Role.ADMIN
         val role = Role(name = name, id = id)
@@ -27,7 +27,7 @@ internal class RoleServiceImplTest {
     }
 
     @Test
-    fun findAll() {
+    fun `Find all roles`() {
         val id0 = 123L
         val name0 = Role.ADMIN
         val role0 = Role(name = name0, id = id0)
@@ -45,7 +45,7 @@ internal class RoleServiceImplTest {
     }
 
     @Test
-    fun get() {
+    fun `Get role by name`() {
         val id = 123L
         val name = Role.ADMIN
         val role = Role(name = name, id = id)
@@ -59,7 +59,7 @@ internal class RoleServiceImplTest {
     }
 
     @Test
-    fun get_notFound() {
+    fun `Ensure RoleNotFoundException is thrown if role isn't found`() {
         val name = Role.ADMIN
         every { roleRepository.findByName(name) } returns null
 
