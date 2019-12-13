@@ -38,8 +38,8 @@ internal class UserControllerTest : SecuredControllerTest() {
         val users = userClient.getUsers(authorization)
 
         // Then
-        val adminUser = users.filter { it.email == authenticationConfiguration.adminUserEmail }.first()
-        val testUser = users.filter { it.email == authenticationConfiguration.testUserEmail }.first()
+        val adminUser = users.first { it.email == authenticationConfiguration.adminUserEmail }
+        val testUser = users.first { it.email == authenticationConfiguration.testUserEmail }
 
         assertEquals(2, users.count())
         assertNotNull(adminUser)
