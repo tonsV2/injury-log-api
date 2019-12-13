@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.LocalDateTime
+import kotlin.test.assertTrue
 
 @Client("/")
 interface InjuryClient {
@@ -34,6 +35,9 @@ interface InjuryClient {
 
     @Post("/injuries/{id}/images", produces = [MULTIPART_FORM_DATA])
     fun postImage(id: Long, @Body body: MultipartBody, @Header authorization: String): ImageReference
+
+    @Get("/injuries/{injuryId}/images/{imageId}")
+    fun getImage(injuryId: Long, imageId: Long, @Header authorization: String): HttpResponse<ByteArray>
 }
 
 @MicronautTest
@@ -146,7 +150,26 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
 
     @Test
     fun `Get an image of an injury`() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // Given
+        val description = "description"
+        val occurredAt = LocalDateTime.now()
+        val injuryId = createInjury(description, occurredAt).id
+
+        val path = "src/test/resources/injury_image.png"
+        val id = createInjuryImage(path, injuryId).id
+
+        //When
+        val response = injuryClient.getImage(injuryId, id, authorization)
+
+        // Then
+        val expectedBytes = File(path).readBytes()
+        val actualBytes = response.body() as ByteArray
+
+        assertEquals(expectedBytes.size, actualBytes.size)
+
+        var equal = false
+        expectedBytes.forEachIndexed { index, byte -> equal = byte == actualBytes[index] }
+        assertTrue(equal)
     }
 
     @Test
@@ -157,5 +180,16 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
     private fun createInjury(description: String, occurredAt: LocalDateTime): InjuryResponse {
         val request = InjuryRequest(description, occurredAt)
         return injuryClient.postInjury(request, authorization)
+    }
+
+    private fun createInjuryImage(path: String, injuryId: Long): ImageReference {
+        val file = File(path)
+        val requestBody = MultipartBody.builder()
+                .addPart("file",
+                        file.name,
+                        MediaType.APPLICATION_OCTET_STREAM_TYPE,
+                        file
+                ).build()
+        return injuryClient.postImage(injuryId, requestBody, authorization)
     }
 }
