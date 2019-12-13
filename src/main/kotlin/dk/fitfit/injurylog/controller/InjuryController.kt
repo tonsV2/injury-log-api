@@ -58,7 +58,7 @@ class InjuryController(private val userService: UserService, private val injuryS
     }
 
     @Delete("/injuries/{injuryId}/images/{imageId}")
-    fun deleteImage(injuryId: Long, imageId: Long, principal: Principal): HttpResponse<Any>? {
+    fun deleteImage(injuryId: Long, imageId: Long, principal: Principal): HttpResponse<Any> {
         userService.getByEmail(principal.name).let {
             injuryService.deleteImage(it, injuryId, imageId)
             return HttpResponse.ok()

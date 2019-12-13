@@ -38,6 +38,9 @@ interface InjuryClient {
 
     @Get("/injuries/{injuryId}/images/{imageId}")
     fun getImage(injuryId: Long, imageId: Long, @Header authorization: String): HttpResponse<ByteArray>
+
+    @Delete("/injuries/{injuryId}/images/{imageId}")
+    fun deleteImage(injuryId: Long, imageId: Long, @Header authorization: String): HttpResponse<Any>
 }
 
 @MicronautTest
@@ -156,10 +159,10 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
         val injuryId = createInjury(description, occurredAt).id
 
         val path = "src/test/resources/injury_image.png"
-        val id = createInjuryImage(path, injuryId).id
+        val imageId = createInjuryImage(path, injuryId).id
 
         //When
-        val response = injuryClient.getImage(injuryId, id, authorization)
+        val response = injuryClient.getImage(injuryId, imageId, authorization)
 
         // Then
         val expectedBytes = File(path).readBytes()
@@ -174,7 +177,19 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
 
     @Test
     fun `Delete an image of an injury`() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // Given
+        val description = "description"
+        val occurredAt = LocalDateTime.now()
+        val injuryId = createInjury(description, occurredAt).id
+
+        val path = "src/test/resources/injury_image.png"
+        val imageId = createInjuryImage(path, injuryId).id
+
+        //When
+        val response = injuryClient.deleteImage(injuryId, imageId, authorization)
+
+        // Then
+        assertEquals(200, response.status.code)
     }
 
     private fun createInjury(description: String, occurredAt: LocalDateTime): InjuryResponse {
