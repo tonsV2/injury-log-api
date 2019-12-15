@@ -5,10 +5,9 @@ import dk.fitfit.injurylog.repository.TagRepository
 import io.micronaut.test.annotation.MicronautTest
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @MicronautTest
@@ -31,20 +30,23 @@ internal class TagServiceImplTest {
         assertEquals(2, tags.size)
         assertTrue(tags.contains(tag))
         assertTrue(tags.contains(tag2))
+        verify(exactly = 1) { tagRepository.findTagsStartingWith(query) }
     }
 
     @Test
     fun `Save a tag`() {
         // Given
-        val tag = Tag("tagName")
+        val id = 123L
+        val name = "tagName"
+        val tag = Tag(name, id)
         every { tagRepository.save(tag) } returns tag
 
         // When
         val saved = tagService.save(tag)
 
         // Then
-        assertNotNull(saved.id)
-        assertNotEquals(0L, saved.id)
+        assertEquals(tag.id, saved.id)
         assertEquals(tag.name, saved.name)
+        verify(exactly = 1) { tagRepository.save(tag) }
     }
 }
