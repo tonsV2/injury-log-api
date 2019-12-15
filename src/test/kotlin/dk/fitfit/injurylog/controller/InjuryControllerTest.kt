@@ -73,8 +73,8 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
         val response = injuryClient.getInjuries(authorization)
 
         // Then
-        val injury1 = response.filter { it.id == id1 }.first()
-        val injury2 = response.filter { it.id == id2 }.first()
+        val injury1 = response.first { it.id == id1 }
+        val injury2 = response.first { it.id == id2 }
 
         assertEquals(2, response.count())
 
