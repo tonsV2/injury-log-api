@@ -10,6 +10,13 @@ import javax.persistence.*
 class Injury(val description: String,
              @JsonIgnore @ManyToOne val user: User,
              val occurredAt: LocalDateTime = LocalDateTime.now(),
+             @ManyToMany(fetch = FetchType.EAGER)
+             @Fetch(value = FetchMode.SUBSELECT)
+             @JoinTable(name = "injury_tags",
+                     joinColumns = [(JoinColumn(name = "injury_id", referencedColumnName = "id"))])
+             val tags: MutableList<Tag> = mutableListOf(),
              val loggedAt: LocalDateTime = LocalDateTime.now(),
-             @OneToMany(fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT) val imageReferences: MutableList<ImageReference> = mutableListOf(),
+             @OneToMany(fetch = FetchType.EAGER)
+             @Fetch(FetchMode.SUBSELECT)
+             val imageReferences: MutableList<ImageReference> = mutableListOf(),
              @Id @GeneratedValue(strategy = GenerationType.SEQUENCE) val id: Long = 0)

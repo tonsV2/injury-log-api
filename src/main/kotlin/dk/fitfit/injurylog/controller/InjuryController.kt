@@ -4,6 +4,8 @@ import dk.fitfit.injurylog.domain.Injury
 import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.dto.InjuryRequest
 import dk.fitfit.injurylog.dto.InjuryResponse
+import dk.fitfit.injurylog.dto.toTag
+import dk.fitfit.injurylog.dto.toTagResponse
 import dk.fitfit.injurylog.service.InjuryService
 import dk.fitfit.injurylog.service.UserService
 import dk.fitfit.injurylog.service.impl.UserNotFoundException
@@ -73,8 +75,8 @@ class InjuryController(private val userService: UserService, private val injuryS
         return StreamedFile(inputStream, MediaType.APPLICATION_OCTET_STREAM_TYPE)
     }
 
-    private fun InjuryRequest.toInjury(user: User) = Injury(description, user, occurredAt)
-    private fun Injury.toInjuryResponse() = InjuryResponse(description, occurredAt, loggedAt, imageReferences.map { it.id }, id)
+    private fun InjuryRequest.toInjury(user: User) = Injury(description, user, occurredAt, tags.map { it.toTag() }.toMutableList())
+    private fun Injury.toInjuryResponse() = InjuryResponse(description, occurredAt, loggedAt, imageReferences.map { it.id }, tags.map { it.toTagResponse() }, id)
 }
 
 @Produces
