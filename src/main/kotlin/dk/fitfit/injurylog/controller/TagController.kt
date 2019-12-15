@@ -4,7 +4,6 @@ import dk.fitfit.injurylog.dto.TagRequest
 import dk.fitfit.injurylog.dto.TagResponse
 import dk.fitfit.injurylog.dto.toTag
 import dk.fitfit.injurylog.dto.toTagResponse
-import dk.fitfit.injurylog.repository.TagRepository
 import dk.fitfit.injurylog.service.TagService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -14,7 +13,7 @@ import io.micronaut.security.rules.SecurityRule
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
-class TagController(private val tagService: TagService, private val tagRepository: TagRepository) {
+class TagController(private val tagService: TagService) {
     @Post("/tags")
     fun postTag(tagRequest: TagRequest): TagResponse {
         val tag = tagRequest.toTag()
