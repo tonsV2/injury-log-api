@@ -1,25 +1,6 @@
 package dk.fitfit.injurylog
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.databind.ObjectMapper
-import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
-import dk.fitfit.injurylog.domain.Role
-import dk.fitfit.injurylog.domain.User
-import dk.fitfit.injurylog.service.RoleService
-import dk.fitfit.injurylog.service.UserService
-import io.micronaut.context.annotation.Factory
-import io.micronaut.context.annotation.Replaces
-import io.micronaut.context.event.ApplicationEventListener
-import io.micronaut.discovery.event.ServiceStartedEvent
-import io.micronaut.jackson.JacksonConfiguration
-import io.micronaut.jackson.ObjectMapperFactory
 import io.micronaut.runtime.Micronaut
-import io.micronaut.scheduling.annotation.Async
-import mu.KotlinLogging
-import javax.inject.Singleton
-
-private val logger = KotlinLogging.logger {}
 
 object Application {
     @JvmStatic
@@ -28,51 +9,5 @@ object Application {
                 .packages("dk.fitfit.injurylog")
                 .mainClass(Application.javaClass)
                 .start()
-    }
-}
-
-@Singleton
-open class UserLoader(private val authenticationConfiguration: AuthenticationConfiguration,
-                      private val userService: UserService,
-                      private val roleService: RoleService) : ApplicationEventListener<ServiceStartedEvent> {
-    @Async
-    override fun onApplicationEvent(event: ServiceStartedEvent) {
-        val role = roleService.save(Role(Role.ADMIN))
-        val roles = roleService.findAll()
-
-        val adminUser = User(authenticationConfiguration.adminUserEmail)
-        adminUser.roles.add(role)
-        val savedAdmin = userService.save(adminUser)
-
-        val testUser = User(authenticationConfiguration.testUserEmail)
-        val savedTest = userService.save(testUser)
-
-        val users = userService.findAll()
-
-        logger.info {
-            """
-                Creating admin role
-                Role: ${role.name}
-                All roles: ${roles.joinToString { it.name }}
-                Creating admin user
-                Email: ${savedAdmin.email}
-                Password: ${authenticationConfiguration.adminUserPassword}
-                Creating test user
-                Email: ${savedTest.email}
-                Password: ${authenticationConfiguration.testUserPassword}
-                All users: ${users.joinToString { it.email }}
-            """.trimIndent()
-        }
-    }
-
-    @Factory
-    @Replaces(ObjectMapperFactory::class)
-    internal class CustomObjectMapperFactory : ObjectMapperFactory() {
-        @Singleton
-        @Replaces(ObjectMapper::class)
-        override fun objectMapper(jacksonConfiguration: JacksonConfiguration?, jsonFactory: JsonFactory?): ObjectMapper {
-            jacksonConfiguration?.serializationInclusion = JsonInclude.Include.USE_DEFAULTS
-            return super.objectMapper(jacksonConfiguration, jsonFactory)
-        }
     }
 }
