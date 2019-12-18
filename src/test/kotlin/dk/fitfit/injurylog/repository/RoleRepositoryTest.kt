@@ -22,7 +22,7 @@ internal open class RoleRepositoryTest {
         MockKAnnotations.init(this)
 
         userRepository.deleteAll()
-        roleRepository. deleteAll()
+        roleRepository.deleteAll()
     }
 
     @Test
