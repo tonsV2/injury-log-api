@@ -78,13 +78,13 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
 
         assertEquals(2, response.count())
 
-        assertEquals(id1, firstInjury.id)
-        assertEquals(description1, firstInjury.description)
-        assertEquals(occurredAt1, firstInjury.occurredAt)
+        assertEquals(id2, firstInjury.id)
+        assertEquals(description2, firstInjury.description)
+        assertEquals(occurredAt2, firstInjury.occurredAt)
 
-        assertEquals(id2, secondInjury.id)
-        assertEquals(description2, secondInjury.description)
-        assertEquals(occurredAt2, secondInjury.occurredAt)
+        assertEquals(id1, secondInjury.id)
+        assertEquals(description1, secondInjury.description)
+        assertEquals(occurredAt1, secondInjury.occurredAt)
 
         val comparison = firstInjury.occurredAt.compareTo(secondInjury.occurredAt)
         assertEquals(1, comparison)
