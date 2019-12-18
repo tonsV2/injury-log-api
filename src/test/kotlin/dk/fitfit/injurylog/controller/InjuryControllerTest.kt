@@ -73,18 +73,21 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
         val response = injuryClient.getInjuries(authorization)
 
         // Then
-        val injury1 = response.first { it.id == id1 }
-        val injury2 = response.first { it.id == id2 }
+        val firstInjury = response.elementAt(0)
+        val secondInjury = response.elementAt(1)
 
         assertEquals(2, response.count())
 
-        assertEquals(id1, injury1.id)
-        assertEquals(description1, injury1.description)
-        assertEquals(occurredAt1, injury1.occurredAt)
+        assertEquals(id1, firstInjury.id)
+        assertEquals(description1, firstInjury.description)
+        assertEquals(occurredAt1, firstInjury.occurredAt)
 
-        assertEquals(id2, injury2.id)
-        assertEquals(description2, injury2.description)
-        assertEquals(occurredAt2, injury2.occurredAt)
+        assertEquals(id2, secondInjury.id)
+        assertEquals(description2, secondInjury.description)
+        assertEquals(occurredAt2, secondInjury.occurredAt)
+
+        val comparison = firstInjury.occurredAt.compareTo(secondInjury.occurredAt)
+        assertEquals(1, comparison)
     }
 
     @Test

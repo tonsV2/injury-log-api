@@ -46,16 +46,25 @@ internal class InjuryServiceImplTest {
 
     @Test
     fun `Find all injuries`() {
+        // Given
         val id1 = 123L
         val description1 = "description"
         val injury1 = Injury(description = description1, user = user, id = id1)
         every { injuryRepository.findAll(user) } returns listOf(injury, injury1)
 
+        // When
         val injuries = injuryService.findAll(user)
 
+        // Then
         assertEquals(2, injuries.count())
         assertTrue(injuries.contains(injury))
         assertTrue(injuries.contains(injury1))
+
+        val firstInjury = injuries.elementAt(0)
+        val secondInjury = injuries.elementAt(1)
+        val comparison = firstInjury.occurredAt.compareTo(secondInjury.occurredAt)
+        assertEquals(1, comparison)
+
         verify(exactly = 1) { injuryRepository.findAll(user) }
     }
 
