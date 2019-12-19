@@ -14,7 +14,7 @@ docker run -it -p 8080:8080 --env-file .env registry.heroku.com/injury-log/web
 ## Docker Compose (database: Postgresql)
 ```bash
 ./gradlew jibDockerBuild
-docker-compose up
+docker-compose up app
 ```
 
 # Deploy to Heroku (database: Postgresql)

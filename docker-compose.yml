@@ -8,6 +8,8 @@ services:
       - .env
     environment:
       MICRONAUT_ENVIRONMENTS: docker
+    depends_on:
+      - database
 
   database:
     image: postgres:11-alpine
@@ -15,3 +17,12 @@ services:
       POSTGRES_USER: injury-log
       POSTGRES_PASSWORD: injury-log
       POSTGRES_DB: injury-log
+
+  test:
+    image: adoptopenjdk/openjdk12-openj9
+    command: /bin/sh -c './gradlew test'
+    working_dir: /src
+    volumes:
+      - .:/src
+    env_file:
+      - .env
