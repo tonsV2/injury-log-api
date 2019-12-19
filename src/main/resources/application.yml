@@ -36,9 +36,12 @@ jpa:
         show_sql: true
 
 google:
-  server:
+  android:
     client:
       id: 588170906559-raeponfqqduusmmpnqjd8a422ccq8cp0.apps.googleusercontent.com
+  web:
+    client:
+      id: 588170906559-30feberacr881j2v45n3bf6grmm4kpdd.apps.googleusercontent.com
 
 users:
   admin:
