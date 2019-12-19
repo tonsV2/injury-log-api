@@ -14,11 +14,13 @@ import org.reactivestreams.Publisher
 import javax.inject.Singleton
 
 @Singleton
-class AuthenticationProviderUserPassword(private val authenticationConfiguration: AuthenticationConfiguration, private val userService: UserService) : AuthenticationProvider {
+class AuthenticationProviderUserPassword(private val authenticationConfiguration: AuthenticationConfiguration,
+                                         private val userService: UserService,
+                                         private val googleTokenVerifier: GoogleTokenVerifier) : AuthenticationProvider {
     override fun authenticate(authenticationRequest: AuthenticationRequest<*, *>?): Publisher<AuthenticationResponse> {
         if (authenticationRequest != null) {
             if (authenticationRequest.identity == "_" && authenticationRequest.secret != null) {
-                verifyToken(authenticationRequest.secret as String)?.let {
+                googleTokenVerifier.verifyToken(authenticationRequest.secret as String)?.let {
                     if (it.email != null && it.emailVerified) {
                         // TODO: If payload.emailVerified == false create AuthenticationFailureReason and pass to AuthenticationFailed
                         val user = createUserIfNotFound(it.email)
@@ -49,8 +51,11 @@ class AuthenticationProviderUserPassword(private val authenticationConfiguration
             userService.save(User(email))
         }
     }
+}
 
-    private fun verifyToken(secret: String): GoogleIdToken.Payload? {
+@Singleton
+class GoogleTokenVerifier(private val authenticationConfiguration: AuthenticationConfiguration) {
+    fun verifyToken(secret: String): GoogleIdToken.Payload? {
         val transport = NetHttpTransport()
         val jsonFactory = JacksonFactory()
         val verifier = GoogleIdTokenVerifier.Builder(transport, jsonFactory)
