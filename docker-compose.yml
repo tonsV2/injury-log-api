@@ -19,7 +19,7 @@ services:
       POSTGRES_DB: injury-log
 
   test:
-    image: adoptopenjdk/openjdk12-openj9
+    image: adoptopenjdk:11.0.5_10-jdk-hotspot
     command: /bin/sh -c './gradlew test'
     working_dir: /src
     volumes:
