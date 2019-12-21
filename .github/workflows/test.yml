@@ -10,6 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Test
-      run: ./gradlew test
+      run: ./gradlew --stacktrace test
       env:
         ADMIN_USER_EMAIL: ${{ secrets.ADMIN_USER_EMAIL }}
+        JWT_SIGNATURES_GENERATOR_SECRET: ${{ secrets.JWT_SIGNATURES_GENERATOR_SECRET }}
