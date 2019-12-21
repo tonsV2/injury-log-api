@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 #    container: adoptopenjdk/openjdk12-openj9
-    container: adoptopenjdk:11.0.5_10-jdk-openj9-0.17.0-bionic
+    container: adoptopenjdk:8u232-b09-jdk-openj9-0.17.0-bionic
 
     steps:
     - uses: actions/checkout@v1
