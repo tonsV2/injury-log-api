@@ -14,3 +14,8 @@ jobs:
       env:
         ADMIN_USER_EMAIL: ${{ secrets.ADMIN_USER_EMAIL }}
         JWT_SIGNATURES_GENERATOR_SECRET: ${{ secrets.JWT_SIGNATURES_GENERATOR_SECRET }}
+    - name: Archive test results
+      uses: actions/upload-artifact@v1
+      with:
+        name: test-report
+        path: build/reports/tests/test/
