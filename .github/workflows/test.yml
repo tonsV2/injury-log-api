@@ -11,3 +11,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: Test
       run: ./gradlew test
+      env:
+        ADMIN_USER_EMAIL: ${{ secrets.ADMIN_USER_EMAIL }}
