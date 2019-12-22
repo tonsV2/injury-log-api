@@ -1,9 +1,8 @@
 package dk.fitfit.injurylog.controller
 
+import dk.fitfit.injurylog.domain.Tag
 import dk.fitfit.injurylog.dto.TagRequest
 import dk.fitfit.injurylog.dto.TagResponse
-import dk.fitfit.injurylog.dto.toTag
-import dk.fitfit.injurylog.dto.toTagResponse
 import dk.fitfit.injurylog.service.TagService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -24,3 +23,6 @@ class TagController(private val tagService: TagService) {
     @Get("/tags/{name}")
     fun getTagsStartingWith(name: String): List<TagResponse> = tagService.findTagsStartingWith(name).map { it.toTagResponse() }
 }
+
+fun Tag.toTagResponse() = TagResponse(name, id)
+fun TagRequest.toTag() = Tag(name, id)

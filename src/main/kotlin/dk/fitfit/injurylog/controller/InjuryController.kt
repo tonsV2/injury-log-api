@@ -4,8 +4,6 @@ import dk.fitfit.injurylog.domain.Injury
 import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.dto.InjuryRequest
 import dk.fitfit.injurylog.dto.InjuryResponse
-import dk.fitfit.injurylog.dto.toTag
-import dk.fitfit.injurylog.dto.toTagResponse
 import dk.fitfit.injurylog.service.InjuryService
 import dk.fitfit.injurylog.service.UserService
 import dk.fitfit.injurylog.service.impl.UserNotFoundException

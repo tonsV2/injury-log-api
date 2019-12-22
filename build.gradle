@@ -34,6 +34,9 @@ jib {
 repositories {
     mavenCentral()
     maven { url "https://jcenter.bintray.com" }
+    maven {
+        url 'https://dl.bintray.com/tons/tons'
+    }
 }
 
 configurations {
@@ -76,6 +79,8 @@ dependencies {
     compile 'com.amazonaws:aws-java-sdk-s3:1.11.414'
 
     compile 'io.github.microutils:kotlin-logging:1.7.7'
+
+    implementation 'dk.fitfit.injurylog:injurylog-dto:0.1'
 }
 
 test.classpath += configurations.developmentOnly
