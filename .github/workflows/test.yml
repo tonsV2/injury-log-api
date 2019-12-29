@@ -13,6 +13,7 @@ jobs:
       run: ./gradlew --stacktrace test
       env:
         ADMIN_USER_EMAIL: ${{ secrets.ADMIN_USER_EMAIL }}
+        ADMIN_USER_PASSWORD: ${{ secrets.ADMIN_USER_PASSWORD }}
         JWT_SIGNATURES_GENERATOR_SECRET: ${{ secrets.JWT_SIGNATURES_GENERATOR_SECRET }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}

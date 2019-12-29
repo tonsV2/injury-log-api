@@ -47,10 +47,11 @@ users:
   admin:
     # NOTE: Must be associated with a valid Google account
     email: ${ADMIN_USER_EMAIL}
-    password: ${random.uuid}
+    password: ${ADMIN_USER_PASSWORD}
   test:
     # NOTE: This doesn't have to be a valid email
     email: test@test.com
+    # NOTE: This should NOT be your password for anything. Best thing to do is just leaving it as the random uuid it is by default
     password: ${random.uuid}
 
 aws:
