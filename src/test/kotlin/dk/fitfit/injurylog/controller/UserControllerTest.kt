@@ -15,9 +15,10 @@ internal class UserControllerTest(private val authenticationConfiguration: Authe
         val authorization = getAuthorization(authenticationConfiguration.adminUserEmail, authenticationConfiguration.adminUserPassword)
 
         // When
-        val users = userClient.getUsers(authorization)
+        val response = userClient.getUsers(authorization)
 
         // Then
+        val users = response.body.get()
         val adminUser = users.first { it.email == authenticationConfiguration.adminUserEmail }
         val testUser = users.first { it.email == authenticationConfiguration.testUserEmail }
 
@@ -32,9 +33,10 @@ internal class UserControllerTest(private val authenticationConfiguration: Authe
         val authorization = getAuthorization(authenticationConfiguration.testUserEmail, authenticationConfiguration.testUserPassword)
 
         // When
-        val principal = userClient.getPrincipal(authorization)
+        val response = userClient.getPrincipal(authorization)
 
         // Then
-        assertEquals(authenticationConfiguration.testUserEmail, principal.name)
+        val user = response.body.get()
+        assertEquals(authenticationConfiguration.testUserEmail, user.name)
     }
 }

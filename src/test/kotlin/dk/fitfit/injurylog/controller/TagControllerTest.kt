@@ -31,9 +31,11 @@ internal class TagControllerTest(private val authenticationConfiguration: Authen
         val response = tagClient.postTag(request, authorization)
 
         // Then
-        assertNotNull(response.id)
-        assertNotEquals(0L, response.id)
-        assertEquals(name, response.name)
+        val tagResponse = response.body.get()
+
+        assertNotNull(tagResponse.id)
+        assertNotEquals(0L, tagResponse.id)
+        assertEquals(name, tagResponse.name)
     }
 
     @Test
@@ -53,11 +55,11 @@ internal class TagControllerTest(private val authenticationConfiguration: Authen
         val tags = tagClient.getTagsStartingWith(query, authorization)
 
         // Then
-        val tag1 = tags.first { it.id == id1 }
-        val tag2 = tags.first { it.id == id2 }
-        val tag3 = tags.filter { it.id == id3 }
+        val tag1 = tags.body.get().first { it.id == id1 }
+        val tag2 = tags.body.get().first { it.id == id2 }
+        val tag3 = tags.body.get().filter { it.id == id3 }
 
-        assertEquals(2, tags.size)
+        assertEquals(2, tags.body.get().size)
 
         assertEquals(id1, tag1.id)
         assertEquals(name1, tag1.name)
@@ -70,6 +72,6 @@ internal class TagControllerTest(private val authenticationConfiguration: Authen
 
     private fun createTag(name: String): TagResponse {
         val request = TagRequest(name)
-        return tagClient.postTag(request, authorization)
+        return tagClient.postTag(request, authorization).body.get()
     }
 }

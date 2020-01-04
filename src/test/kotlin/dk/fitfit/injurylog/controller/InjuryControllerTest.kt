@@ -38,8 +38,9 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
         val response = injuryClient.postInjury(request, authorization)
 
         // Then
-        assertEquals(description, response.description)
-        assertEquals(occurredAt, response.occurredAt)
+        val injuryResponse = response.body.get()
+        assertEquals(description, injuryResponse.description)
+        assertEquals(occurredAt, injuryResponse.occurredAt)
     }
 
     @Test
@@ -75,10 +76,11 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
         val response = injuryClient.getInjuries(authorization)
 
         // Then
-        val firstInjury = response.elementAt(0)
-        val secondInjury = response.elementAt(1)
+        val injuries = response.body.get()
+        val firstInjury = injuries.elementAt(0)
+        val secondInjury = injuries.elementAt(1)
 
-        assertEquals(2, response.count())
+        assertEquals(2, injuries.count())
 
         assertEquals(id2, firstInjury.id)
         assertEquals(description2, firstInjury.description)
@@ -169,7 +171,7 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
         val response = injuryClient.postImage(id, requestBody, authorization)
 
         // Then
-        assertEquals("$id:${file.name}", response.key)
+        assertEquals("$id:${file.name}", response.body.get().key)
     }
 
     @Test
@@ -215,7 +217,7 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
 
     private fun createInjury(description: String, occurredAt: LocalDateTime): InjuryResponse {
         val request = InjuryRequest(description, occurredAt)
-        return injuryClient.postInjury(request, authorization)
+        return injuryClient.postInjury(request, authorization).body.get()
     }
 
     private fun createInjuryImage(path: String, injuryId: Long): ImageReference {
@@ -226,6 +228,6 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
                         MediaType.APPLICATION_OCTET_STREAM_TYPE,
                         file
                 ).build()
-        return injuryClient.postImage(injuryId, requestBody, authorization)
+        return injuryClient.postImage(injuryId, requestBody, authorization).body.get()
     }
 }
