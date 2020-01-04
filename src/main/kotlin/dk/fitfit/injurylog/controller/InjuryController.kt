@@ -6,6 +6,7 @@ import dk.fitfit.injurylog.dto.InjuryRequest
 import dk.fitfit.injurylog.dto.InjuryResponse
 import dk.fitfit.injurylog.service.InjuryService
 import dk.fitfit.injurylog.service.UserService
+import dk.fitfit.injurylog.service.impl.InjuryNotFoundException
 import dk.fitfit.injurylog.service.impl.UserNotFoundException
 import io.micronaut.context.annotation.Requires
 import io.micronaut.http.HttpRequest
@@ -82,4 +83,11 @@ class InjuryController(private val userService: UserService, private val injuryS
 @Requires(classes = [UserNotFoundException::class, ExceptionHandler::class])
 class UserNotFoundExceptionHandler : ExceptionHandler<UserNotFoundException, HttpResponse<*>?> {
     override fun handle(request: HttpRequest<*>?, exception: UserNotFoundException): HttpResponse<String> = HttpResponse.notFound(exception.message)
+}
+
+@Produces
+@Singleton
+@Requires(classes = [InjuryNotFoundException::class, ExceptionHandler::class])
+class InjuryNotFoundExceptionHandler : ExceptionHandler<InjuryNotFoundException, HttpResponse<*>?> {
+    override fun handle(request: HttpRequest<*>?, exception: InjuryNotFoundException): HttpResponse<String> = HttpResponse.notFound(exception.message)
 }

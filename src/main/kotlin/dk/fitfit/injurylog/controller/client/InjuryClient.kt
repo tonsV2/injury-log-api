@@ -15,7 +15,7 @@ interface InjuryClient {
     fun postInjury(injuryRequest: InjuryRequest, @Header authorization: String): InjuryResponse
 
     @Get("/injuries/{id}")
-    fun getInjury(id: Long, @Header authorization: String): InjuryResponse
+    fun getInjury(id: Long, @Header authorization: String): HttpResponse<InjuryResponse>
 
     @Get("/injuries")
     fun getInjuries(@Header authorization: String): Iterable<InjuryResponse>

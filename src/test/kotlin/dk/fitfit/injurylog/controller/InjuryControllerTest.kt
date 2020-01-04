@@ -53,9 +53,11 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
         val response = injuryClient.getInjury(id, authorization)
 
         // Then
-        assertEquals(id, response.id)
-        assertEquals(description, response.description)
-        assertEquals(occurredAt, response.occurredAt)
+        val injuryResponse = response.body.get()
+
+        assertEquals(id, injuryResponse.id)
+        assertEquals(description, injuryResponse.description)
+        assertEquals(occurredAt, injuryResponse.occurredAt)
     }
 
     @Test
@@ -102,6 +104,49 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
 
         // Then
         assertEquals(200, response.status.code)
+    }
+
+    @Test
+    fun `Delete an injury with a single image`() {
+        // Given
+        val description = "description"
+        val occurredAt = LocalDateTime.now()
+        val injuryId = createInjury(description, occurredAt).id
+        val path = "src/test/resources/injury_image.png"
+        createInjuryImage(path, injuryId).id
+
+        // When
+        val response = injuryClient.deleteInjury(injuryId, authorization)
+
+        // Then
+        assertEquals(200, response.status.code)
+    }
+
+    @Test
+    fun `Delete an injury with multiple images`() {
+        // Given
+        val description = "description"
+        val occurredAt = LocalDateTime.now()
+        val injuryId = createInjury(description, occurredAt).id
+
+        val path = "src/test/resources/injury_image.png"
+        val imageId = createInjuryImage(path, injuryId).id
+
+        val path2 = "src/test/resources/injury_image2.png"
+        val imageId2 = createInjuryImage(path2, injuryId).id
+
+        // When
+        val response = injuryClient.deleteInjury(injuryId, authorization)
+
+        // Then
+        assertEquals(200, response.status.code)
+
+        val getImageResponse = injuryClient.getImage(injuryId, imageId, authorization)
+        assertEquals(404, getImageResponse.status.code)
+        val getImageResponse2 = injuryClient.getImage(injuryId, imageId2, authorization)
+        assertEquals(404, getImageResponse2.status.code)
+        val getInjuryResponse = injuryClient.getInjury(injuryId, authorization)
+        assertEquals(404, getInjuryResponse.status.code)
     }
 
     @Test
