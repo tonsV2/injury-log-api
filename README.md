@@ -1,23 +1,36 @@
-# Start
-## Gradle (database: H2)
+# Injury Log API
+
+## Quick start
+Using gradle and H2 database
 ```bash
 JWT_SIGNATURES_GENERATOR_SECRET=some_255_bits_long_secret_string
+ADMIN_USER_EMAIL=your-google-email@gmail.com
+ADMIN_USER_PASSWORD=some-long-password-please-use-a-password-generator
 ./gradlew run
 ```
 
-## Docker (database: H2)
+## Slow start
+Configure your environment by copying and filling in suitable values for your .env file
+```bash
+cp .env.example .env
+```
+
+Launch the application by using either docker or docker-compose as described in the following sections
+
+### Docker (database: H2)
 ```bash
 ./gradlew jibDockerBuild
 docker run -it -p 8080:8080 --env-file .env registry.heroku.com/injury-log/web
 ```
 
-## Docker Compose (database: Postgresql)
+### Docker Compose (database: Postgresql)
 ```bash
 ./gradlew jibDockerBuild
 docker-compose up app
 ```
 
-# Deploy to Heroku (database: Postgresql)
+## Deploying
+### Deploy to Heroku (database: Postgresql)
 * Remember to set the required environment variables. See .env.example for a complete list
 * Depending on the Dyno type, setting the environment variable JAVA_TOOL_OPTIONS to "-Xmx512M -Xms256M" might also be necessary
 
@@ -60,23 +73,20 @@ The following bucket policy has been applied to the bucket. Granting only a sing
 # Usage
 All of the below examples are for fish shell (https://fishshell.com/) using httpie (https://httpie.org/)
 
-## Set Google Token
+## Get access token
 ```bash
-set token "eyJhbGciOiJSUzI1NiIsImtp..."
-```
-
-## Set access token
-```bash
+set username [the same value as you used for ADMIN_USER_EMAIL]
+set password [the same value as you used for ADMIN_USER_PASSWORD]
 set access_token (echo "{
-            \"username\": \"_\",
-            \"password\": \"$token\"
+            \"username\": \"$username\",
+            \"password\": \"$password\"
           }" | http :8080/login | jq -r '.access_token')
 ```
 
 ## Create injury
 ```bash
 echo '{
-            "description": "My hip hurts... 111122",
+            "description": "My hip hurts...",
             "occurredAt": [2019,11,25,11,22,3,666]
       }' | http post :8080/injuries "Authorization:Bearer $access_token"
 ```
