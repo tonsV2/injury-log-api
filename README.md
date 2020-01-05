@@ -3,9 +3,9 @@
 ## Quick start
 Using gradle and H2 database
 ```bash
-JWT_SIGNATURES_GENERATOR_SECRET=some_255_bits_long_secret_string
-ADMIN_USER_EMAIL=your-google-email@gmail.com
-ADMIN_USER_PASSWORD=some-long-password-please-use-a-password-generator
+export JWT_SIGNATURES_GENERATOR_SECRET=some_255_bits_long_secret_string
+export ADMIN_USER_EMAIL=your-google-email@gmail.com
+export ADMIN_USER_PASSWORD=some-long-password-please-use-a-password-generator
 ./gradlew run
 ```
 
