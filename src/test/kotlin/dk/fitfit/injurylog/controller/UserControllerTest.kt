@@ -5,7 +5,6 @@ import dk.fitfit.injurylog.controller.client.UserClient
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 @MicronautTest
 internal class UserControllerTest(private val authenticationConfiguration: AuthenticationConfiguration, private val userClient: UserClient) : SecuredControllerTest() {
@@ -23,8 +22,8 @@ internal class UserControllerTest(private val authenticationConfiguration: Authe
         val testUser = users.first { it.email == authenticationConfiguration.testUserEmail }
 
         assertEquals(2, users.count())
-        assertNotNull(adminUser)
-        assertNotNull(testUser)
+        assertEquals(authenticationConfiguration.adminUserEmail, adminUser.email)
+        assertEquals(authenticationConfiguration.testUserEmail, testUser.email)
     }
 
     @Test

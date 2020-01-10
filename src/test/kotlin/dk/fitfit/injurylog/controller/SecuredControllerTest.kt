@@ -4,7 +4,7 @@ import dk.fitfit.injurylog.controller.client.LoginClient
 import dk.fitfit.injurylog.dto.Credentials
 import javax.inject.Inject
 
-internal open class SecuredControllerTest {
+internal abstract class SecuredControllerTest {
     @Inject
     lateinit var loginClient: LoginClient
 
