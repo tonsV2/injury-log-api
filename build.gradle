@@ -80,7 +80,7 @@ dependencies {
 
     compile 'io.github.microutils:kotlin-logging:1.7.7'
 
-    implementation 'dk.fitfit.injurylog:injurylog-dto:0.1'
+    implementation 'dk.fitfit.injurylog:injurylog-dto:0.2'
 }
 
 test.classpath += configurations.developmentOnly
