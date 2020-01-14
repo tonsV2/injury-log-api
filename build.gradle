@@ -27,7 +27,7 @@ jib {
         tags = [project.version]
     }
     container {
-        user = "guest"
+        user = "nobody"
     }
 }
 
