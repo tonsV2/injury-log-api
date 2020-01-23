@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Test
-      run: ./gradlew --stacktrace test
+      run: ./gradlew test
       env:
         ADMIN_USER_EMAIL: ${{ secrets.ADMIN_USER_EMAIL }}
         ADMIN_USER_PASSWORD: ${{ secrets.ADMIN_USER_PASSWORD }}
