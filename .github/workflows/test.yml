@@ -63,4 +63,6 @@ jobs:
         run: ./gradlew jib
 
       - name: Release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a injury-log
