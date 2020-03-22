@@ -41,4 +41,4 @@ jobs:
       - name: Build and push
         run: ./gradlew jib
       - name: Release
-        run: heroku container:release web
+        run: heroku container:release web -a injury-log
