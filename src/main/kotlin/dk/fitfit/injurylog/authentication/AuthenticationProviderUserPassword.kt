@@ -44,12 +44,10 @@ class AuthenticationProviderUserPassword(private val authenticationConfiguration
         return Flowable.just(AuthenticationFailed())
     }
 
-    private fun createUserIfNotFound(email: String): User {
-        return try {
-            userService.getByEmail(email)
-        } catch (e: UserNotFoundException) {
-            userService.save(User(email))
-        }
+    private fun createUserIfNotFound(email: String): User = try {
+        userService.getByEmail(email)
+    } catch (e: UserNotFoundException) {
+        userService.save(User(email))
     }
 }
 
