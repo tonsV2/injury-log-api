@@ -14,9 +14,11 @@ import javax.inject.Singleton
 private val logger = KotlinLogging.logger {}
 
 @Singleton
-open class DataLoader(private val authenticationConfiguration: AuthenticationConfiguration,
-                      private val userService: UserService,
-                      private val roleService: RoleService) : ApplicationEventListener<ServiceStartedEvent> {
+class DataLoader(
+        private val authenticationConfiguration: AuthenticationConfiguration,
+        private val userService: UserService,
+        private val roleService: RoleService
+) : ApplicationEventListener<ServiceStartedEvent> {
     @Async
     override fun onApplicationEvent(event: ServiceStartedEvent) {
         val role = roleService.save(Role(Role.ADMIN))
