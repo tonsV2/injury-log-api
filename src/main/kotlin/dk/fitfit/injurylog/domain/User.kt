@@ -8,7 +8,7 @@ import javax.persistence.*
 class User(
         @Column(nullable = false, unique = true) val email: String,
         val created: LocalDateTime = LocalDateTime.now(),
-        @ManyToMany
+        @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(name = "users_roles",
                 joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
                 inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")])

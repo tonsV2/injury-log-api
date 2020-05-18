@@ -5,19 +5,20 @@ import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import java.time.LocalDateTime
 import javax.persistence.*
+import javax.persistence.FetchType.EAGER
 
 @Entity
 class Injury(
         val description: String,
         @JsonIgnore @ManyToOne val user: User,
         val occurredAt: LocalDateTime = LocalDateTime.now(),
-        @ManyToMany
+        @ManyToMany(fetch = EAGER)
         @Fetch(value = FetchMode.SUBSELECT)
         @JoinTable(name = "injury_tags",
                 joinColumns = [(JoinColumn(name = "injury_id", referencedColumnName = "id"))])
         val tags: MutableList<Tag> = mutableListOf(),
         val loggedAt: LocalDateTime = LocalDateTime.now(),
-        @OneToMany
+        @OneToMany(fetch = EAGER)
         @Fetch(FetchMode.SUBSELECT)
         val imageReferences: MutableList<ImageReference> = mutableListOf(),
         @Id @GeneratedValue(strategy = GenerationType.SEQUENCE) val id: Long = 0
