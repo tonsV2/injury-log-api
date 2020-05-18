@@ -6,5 +6,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class ImageReference(val key: String,
-                     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE) val id: Long = 0)
+class ImageReference(
+        val key: String,
+        @Id @GeneratedValue(strategy = GenerationType.SEQUENCE) val id: Long = 0
+)

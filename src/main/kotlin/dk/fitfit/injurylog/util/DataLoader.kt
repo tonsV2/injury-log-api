@@ -9,12 +9,10 @@ import io.micronaut.context.event.ApplicationEventListener
 import io.micronaut.discovery.event.ServiceStartedEvent
 import io.micronaut.scheduling.annotation.Async
 import mu.KotlinLogging
-import javax.inject.Singleton
 
 private val logger = KotlinLogging.logger {}
 
-@Singleton
-class DataLoader(
+open class DataLoader(
         private val authenticationConfiguration: AuthenticationConfiguration,
         private val userService: UserService,
         private val roleService: RoleService
