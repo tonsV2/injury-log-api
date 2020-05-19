@@ -10,10 +10,13 @@ import io.micronaut.context.annotation.Type
 import io.micronaut.data.annotation.Query
 import io.micronaut.data.annotation.Repository
 import io.micronaut.data.repository.CrudRepository
+import java.time.LocalDateTime
 import javax.inject.Singleton
 
 @Repository
 interface InjuryRepository : CrudRepository<Injury, Long> {
+    fun findByUpdatedAfter(updatedAfter: LocalDateTime): Set<Injury>
+
     @Query("from Injury i where i.user = :user")
     fun findAll(user: User): Iterable<Injury>
 

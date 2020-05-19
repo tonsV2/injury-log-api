@@ -9,14 +9,20 @@ import dk.fitfit.injurylog.service.FileStorageService
 import dk.fitfit.injurylog.service.InjuryService
 import io.micronaut.http.multipart.CompletedFileUpload
 import java.io.InputStream
+import java.time.LocalDateTime
 import javax.inject.Singleton
 import javax.transaction.Transactional
 
 @Singleton
 @Transactional
-class InjuryServiceImpl(private val injuryRepository: InjuryRepository,
-                        private val fileStorageService: FileStorageService,
-                        private val imageReferenceRepository: ImageReferenceRepository) : InjuryService {
+class InjuryServiceImpl(
+        private val injuryRepository: InjuryRepository,
+        private val fileStorageService: FileStorageService,
+        private val imageReferenceRepository: ImageReferenceRepository
+) : InjuryService {
+
+    override fun findUpdates(updatedAfter: LocalDateTime): Set<Injury> = injuryRepository.findByUpdatedAfter(updatedAfter)
+
     override fun save(injury: Injury): Injury = injuryRepository.save(injury)
 
     override fun findAll(user: User): Iterable<Injury> = injuryRepository.findAll(user).sortedByDescending { it.occurredAt }

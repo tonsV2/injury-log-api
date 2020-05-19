@@ -11,6 +11,9 @@ import io.micronaut.http.client.multipart.MultipartBody
 
 @Client("/")
 interface InjuryClient {
+    @Get("/injuries/updates")
+    fun findUpdates(@QueryValue updatedTimestamp: Long, @Header authorization: String): List<InjuryResponse>
+
     @Post("/injuries")
     fun postInjury(injuryRequest: InjuryRequest, @Header authorization: String): HttpResponse<InjuryResponse>
 

@@ -1,6 +1,7 @@
 package dk.fitfit.injurylog.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import dk.fitfit.injurylog.domain.core.BaseEntity
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import java.time.LocalDateTime
@@ -21,5 +22,5 @@ class Injury(
         @OneToMany(fetch = EAGER)
         @Fetch(FetchMode.SUBSELECT)
         val imageReferences: MutableList<ImageReference> = mutableListOf(),
-        @Id @GeneratedValue(strategy = GenerationType.SEQUENCE) val id: Long = 0
-)
+        id: Long = 0
+) : BaseEntity(id)

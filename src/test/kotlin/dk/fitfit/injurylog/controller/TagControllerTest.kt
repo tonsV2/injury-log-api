@@ -4,21 +4,64 @@ import dk.fitfit.injurylog.configuration.AuthenticationConfiguration
 import dk.fitfit.injurylog.controller.client.TagClient
 import dk.fitfit.injurylog.dto.TagRequest
 import dk.fitfit.injurylog.dto.TagResponse
+import dk.fitfit.injurylog.repository.TagRepository
 import io.micronaut.test.annotation.MicronautTest
 import io.mockk.MockKAnnotations
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @MicronautTest
-internal class TagControllerTest(private val authenticationConfiguration: AuthenticationConfiguration, private val tagClient: TagClient) : SecuredControllerTest() {
+internal class TagControllerTest(
+        private val authenticationConfiguration: AuthenticationConfiguration,
+        private val tagClient: TagClient,
+        private val tagRepository: TagRepository
+) : SecuredControllerTest() {
+
     private lateinit var authorization: String
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
 
+        tagRepository.deleteAll()
+
         authorization = getAuthorization(authenticationConfiguration.testUserEmail, authenticationConfiguration.testUserPassword)
+    }
+
+    @Test
+    fun `Find updated tags - Return 1 tag`() {
+        // Given
+        val name1 = "tagName1"
+        val updated1 = createTag(name1).updated
+
+        val name2 = "tagName2"
+        createTag(name2)
+
+        // When
+        val tags = tagClient.findUpdates(updated1.toEpochMilli(), authorization)
+
+        // Then
+        assertEquals(1, tags.size)
+        assertEquals(name2, tags.first().name)
+    }
+
+    @Test
+    fun `Find updated tags - Return 0 tag`() {
+        // Given
+        val name1 = "tagName1"
+        createTag(name1)
+
+        val name2 = "tagName2"
+        val updated2 = createTag(name2).updated
+
+        // When
+        val tags = tagClient.findUpdates(updated2.toEpochMilli(), authorization)
+
+        // Then
+        assertEquals(0, tags.size)
     }
 
     @Test
@@ -74,4 +117,6 @@ internal class TagControllerTest(private val authenticationConfiguration: Authen
         val request = TagRequest(name)
         return tagClient.postTag(request, authorization).body.get()
     }
+
+    private fun LocalDateTime.toEpochMilli() = this.toInstant(ZoneOffset.UTC).toEpochMilli()
 }

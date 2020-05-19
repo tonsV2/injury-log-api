@@ -5,6 +5,7 @@ import dk.fitfit.injurylog.controller.client.InjuryClient
 import dk.fitfit.injurylog.domain.ImageReference
 import dk.fitfit.injurylog.dto.InjuryRequest
 import dk.fitfit.injurylog.dto.InjuryResponse
+import dk.fitfit.injurylog.repository.InjuryRepository
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.multipart.MultipartBody
 import io.micronaut.test.annotation.MicronautTest
@@ -14,17 +15,57 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import kotlin.test.assertTrue
 
 @MicronautTest
-internal class InjuryControllerTest(private val authenticationConfiguration: AuthenticationConfiguration, private val injuryClient: InjuryClient) : SecuredControllerTest() {
+internal class InjuryControllerTest(
+        private val authenticationConfiguration: AuthenticationConfiguration,
+        private val injuryClient: InjuryClient,
+        private val injuryRepository: InjuryRepository
+) : SecuredControllerTest() {
     private lateinit var authorization: String
 
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
 
+        injuryRepository.deleteAll()
+
         authorization = getAuthorization(authenticationConfiguration.testUserEmail, authenticationConfiguration.testUserPassword)
+    }
+
+    @Test
+    fun `Find updated injuries - Return 1 injury`() {
+        // Given
+        val description1 = "description"
+        val updated1 = createInjury(description1, LocalDateTime.now()).updated
+
+        val description2 = "description2"
+        createInjury(description2, LocalDateTime.now())
+
+        // When
+        val injuries = injuryClient.findUpdates(updated1.toEpochMilli(), authorization)
+
+        // Then
+        assertEquals(1, injuries.size)
+        assertEquals(description2, injuries.first().description)
+    }
+
+    @Test
+    fun `Find updated injuries - Return 0 injury`() {
+        // Given
+        val description1 = "description"
+        createInjury(description1, LocalDateTime.now())
+
+        val description2 = "description2"
+        val updated2 = createInjury(description2, LocalDateTime.now()).updated
+
+        // When
+        val injuries = injuryClient.findUpdates(updated2.toEpochMilli(), authorization)
+
+        // Then
+        assertEquals(0, injuries.size)
     }
 
     @Test
@@ -230,4 +271,6 @@ internal class InjuryControllerTest(private val authenticationConfiguration: Aut
                 ).build()
         return injuryClient.postImage(injuryId, requestBody, authorization).body.get()
     }
+
+    private fun LocalDateTime.toEpochMilli() = this.toInstant(ZoneOffset.UTC).toEpochMilli()
 }

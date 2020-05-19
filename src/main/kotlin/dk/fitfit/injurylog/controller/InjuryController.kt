@@ -19,11 +19,22 @@ import io.micronaut.http.server.types.files.StreamedFile
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import java.security.Principal
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Singleton
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
 class InjuryController(private val userService: UserService, private val injuryService: InjuryService) {
+    @Get("/injuries/updates")
+    fun findUpdates(updatedTimestamp: Long): List<InjuryResponse> {
+        // TODO: Why do I have to add one millisecond to make this work?
+        val epochMilli = Instant.ofEpochMilli(updatedTimestamp + 1)
+        val updatedAfter = LocalDateTime.ofInstant(epochMilli, ZoneOffset.UTC)
+        return injuryService.findUpdates(updatedAfter).map { it.toInjuryResponse() }
+    }
+
     @Get("/injuries")
     fun getInjuries(principal: Principal): Iterable<InjuryResponse>? = userService.getByEmail(principal.name).let {
         injuryService.findAll(it).map { entity -> entity.toInjuryResponse() }
@@ -75,7 +86,7 @@ class InjuryController(private val userService: UserService, private val injuryS
     }
 
     private fun InjuryRequest.toInjury(user: User) = Injury(description, user, occurredAt, tags.map { it.toTag() }.toMutableList())
-    private fun Injury.toInjuryResponse() = InjuryResponse(description, occurredAt, loggedAt, imageReferences.map { it.id }, tags.map { it.toTagResponse() }, id)
+    private fun Injury.toInjuryResponse() = InjuryResponse(description, occurredAt, loggedAt, imageReferences.map { it.id }, tags.map { it.toTagResponse() }, id, created, updated)
 }
 
 @Produces
