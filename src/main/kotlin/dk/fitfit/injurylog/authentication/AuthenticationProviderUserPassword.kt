@@ -19,7 +19,7 @@ class AuthenticationProviderUserPassword(private val authenticationConfiguration
                                          private val googleTokenVerifier: GoogleTokenVerifier) : AuthenticationProvider {
     override fun authenticate(authenticationRequest: AuthenticationRequest<*, *>?): Publisher<AuthenticationResponse> {
         if (authenticationRequest != null) {
-            if (authenticationRequest.identity == "_" && authenticationRequest.secret != null) {
+            if (authenticationRequest.identity == "google" && authenticationRequest.secret != null) {
                 googleTokenVerifier.verifyToken(authenticationRequest.secret as String)?.let {
                     if (it.email != null && it.emailVerified) {
                         // TODO: If payload.emailVerified == false create AuthenticationFailureReason and pass to AuthenticationFailed

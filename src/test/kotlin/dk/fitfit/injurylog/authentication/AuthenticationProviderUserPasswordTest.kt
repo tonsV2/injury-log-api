@@ -75,7 +75,7 @@ internal class AuthenticationProviderUserPasswordTest(private val authentication
     @Test
     fun `Authenticate existing user by token`() {
         // Given
-        val username = "_"
+        val username = "google"
         val password = "some google token"
 
         val email = authenticationConfiguration.adminUserEmail
@@ -105,7 +105,7 @@ internal class AuthenticationProviderUserPasswordTest(private val authentication
     @Test
     fun `Authenticate nonexisting user by token`() {
         // Given
-        val username = "_"
+        val username = "google"
         val password = "some google token"
 
         val email = authenticationConfiguration.adminUserEmail
