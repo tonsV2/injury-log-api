@@ -1,5 +1,8 @@
 # Injury Log API
 
+## TODO
+* Updates are not restricted to the user in question
+
 ## Quick start
 Using gradle and H2 database
 ```bash
@@ -104,6 +107,21 @@ http :8080/injuries/1/images/1 "Authorization:Bearer $access_token" > image.png
 ## Delete image
 ```bash
 http delete :8080/injuries/1/images/1 "Authorization:Bearer $access_token"
+```
+
+## Add tag
+```bash
+echo '{"name": "left"}' | http post :8080/tags "Authorization:Bearer $access_token"
+```
+
+## Query for tag starting with "le"
+```bash
+http :8080/tags/le "Authorization:Bearer $access_token"
+```
+
+## Find all tags
+```bash
+http :8080/tags/updates\?updatedTimestamp=0 "Authorization:Bearer $access_token"
 ```
 
 # Inspiration

@@ -7,4 +7,5 @@ interface TagService {
     fun findUpdates(updatedAfter: LocalDateTime): Set<Tag>
     fun findTagsStartingWith(name: String): Set<Tag>
     fun save(tag: Tag): Tag
+    fun get(id: Long): Tag
 }

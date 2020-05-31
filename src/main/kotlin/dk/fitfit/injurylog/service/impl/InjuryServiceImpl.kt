@@ -25,6 +25,8 @@ class InjuryServiceImpl(
 
     override fun save(injury: Injury): Injury = injuryRepository.save(injury)
 
+    override fun update(injury: Injury): Injury = injuryRepository.update(injury)
+
     override fun findAll(user: User): Iterable<Injury> = injuryRepository.findAll(user).sortedByDescending { it.occurredAt }
 
     override fun get(user: User, injuryId: Long): Injury {

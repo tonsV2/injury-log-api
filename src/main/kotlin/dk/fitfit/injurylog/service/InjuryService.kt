@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 interface InjuryService {
     fun findUpdates(updatedAfter: LocalDateTime): Set<Injury>
     fun save(injury: Injury): Injury
+    fun update(injury: Injury): Injury
     fun findAll(user: User): Iterable<Injury>
     fun get(user: User, injuryId: Long): Injury
     fun delete(user: User, injuryId: Long)

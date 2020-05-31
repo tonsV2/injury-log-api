@@ -5,6 +5,7 @@ import dk.fitfit.injurylog.domain.User
 import dk.fitfit.injurylog.dto.InjuryRequest
 import dk.fitfit.injurylog.dto.InjuryResponse
 import dk.fitfit.injurylog.service.InjuryService
+import dk.fitfit.injurylog.service.TagService
 import dk.fitfit.injurylog.service.UserService
 import dk.fitfit.injurylog.service.impl.InjuryNotFoundException
 import dk.fitfit.injurylog.service.impl.UserNotFoundException
@@ -26,7 +27,7 @@ import javax.inject.Singleton
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
-class InjuryController(private val userService: UserService, private val injuryService: InjuryService) {
+class InjuryController(private val userService: UserService, private val injuryService: InjuryService, private val tagService: TagService) {
     @Get("/injuries/updates")
     fun findUpdates(updatedTimestamp: Long): List<InjuryResponse> {
         // TODO: Why do I have to add one millisecond to make this work?
@@ -83,6 +84,28 @@ class InjuryController(private val userService: UserService, private val injuryS
             injuryService.getImage(it, injuryId, imageId)
         }
         return StreamedFile(inputStream, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+    }
+
+    @Put("/injuries/{injuryId}/tags/{tagId}")
+    fun putTag(injuryId: Long, tagId: Long, principal: Principal): HttpResponse<Any> {
+        userService.getByEmail(principal.name).let {
+            val injury = injuryService.get(it, injuryId)
+            val tag = tagService.get(tagId)
+            injury.tags.add(tag)
+            val response = injuryService.update(injury).toInjuryResponse()
+            return HttpResponse.ok(response)
+        }
+    }
+
+    @Delete("/injuries/{injuryId}/tags/{tagId}")
+    fun deleteTag(injuryId: Long, tagId: Long, principal: Principal): HttpResponse<Any> {
+        userService.getByEmail(principal.name).let {
+            val injury = injuryService.get(it, injuryId)
+            val tag = tagService.get(tagId)
+            injury.tags.remove(tag)
+            val response = injuryService.update(injury).toInjuryResponse()
+            return HttpResponse.ok(response)
+        }
     }
 
     private fun InjuryRequest.toInjury(user: User) = Injury(description, user, occurredAt, tags.map { it.toTag() }.toMutableList())

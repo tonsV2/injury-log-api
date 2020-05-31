@@ -13,4 +13,14 @@ class TagServiceImpl(private val tagRepository: TagRepository) : TagService {
     override fun findTagsStartingWith(name: String): Set<Tag> = tagRepository.findTagsStartingWith(name)
 
     override fun save(tag: Tag): Tag = tagRepository.save(tag)
+
+    override fun get(id: Long): Tag {
+        val optional = tagRepository.findById(id)
+        if (optional.isEmpty) {
+            throw TagNotFoundException(id)
+        }
+        return optional.get()
+    }
 }
+
+class TagNotFoundException(id: Long) : RuntimeException("No tag found with id: $id")
