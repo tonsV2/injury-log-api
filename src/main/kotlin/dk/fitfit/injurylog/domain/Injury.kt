@@ -11,7 +11,9 @@ import javax.persistence.FetchType.EAGER
 @Entity
 class Injury(
         val description: String,
-        @JsonIgnore @ManyToOne val user: User,
+        @JsonIgnore
+        @ManyToOne
+        val user: User,
         val occurredAt: LocalDateTime = LocalDateTime.now(),
         @ManyToMany(fetch = EAGER)
         @Fetch(value = FetchMode.SUBSELECT)
